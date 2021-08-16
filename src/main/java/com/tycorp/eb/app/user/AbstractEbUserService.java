@@ -3,6 +3,7 @@ package com.tycorp.eb.app.user;
 import com.tycorp.eb.app.AbstractEbAppAggregateService;
 import com.tycorp.eb.app.invite_code.BasicInviteCodeService;
 import com.tycorp.eb.domain.subscription.model.SubscriptionPermitEnum;
+import com.tycorp.eb.domain.subscription.model.SubscriptionSlave;
 import com.tycorp.eb.domain.subscription.repository.SubscriptionSlaveRepository;
 import com.tycorp.eb.domain.user.model.EbUser;
 import com.tycorp.eb.domain.user.model.LoginedEbUser;
@@ -14,6 +15,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 public abstract class AbstractEbUserService extends AbstractEbAppAggregateService {
 
@@ -26,9 +29,8 @@ public abstract class AbstractEbUserService extends AbstractEbAppAggregateServic
     protected BasicInviteCodeService inviteCodeSvc;
 
     protected String login(String useremail, String password) {
-        var JWTs = new ArrayList<String>();
-        var user = userRepo.findByUseremail(useremail).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid crediential"));
+        List<String> JWTs = new ArrayList();
+        EbUser user = userRepo.findByUseremail(useremail).orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid crediential"));
 
         user.validatePassword(password)
                 .next()
@@ -47,7 +49,7 @@ public abstract class AbstractEbUserService extends AbstractEbAppAggregateServic
                         throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Registered useremail");
                     }
 
-                    var defaultSlaves= slaveRepo.getDefaultSubscriptions();
+                    Set<SubscriptionSlave> defaultSlaves = slaveRepo.getDefaultSubscriptions();
                     defaultSlaves.forEach(slave -> {
                         slave.setOperator(authFacade.getDefaultAuthenticatedEbUserDetail());
                         slave.extend(99999).addPermits(

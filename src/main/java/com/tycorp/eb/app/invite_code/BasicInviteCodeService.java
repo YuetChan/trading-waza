@@ -2,7 +2,6 @@ package com.tycorp.eb.app.invite_code;
 
 import no.gorandalum.fluentresult.Result;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
@@ -14,14 +13,16 @@ import java.util.List;
 @Service
 public class BasicInviteCodeService {
 
-    private final String SUFFIX = ":CODE_CACHE";
+    private final String SUFFIX = ":INVITE_CODE";
 
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
     private ValueOperations<String, String> valueOperations;
 
     @PostConstruct
-    private void initValueOperations() { valueOperations = redisTemplate.opsForValue(); }
+    private void initValueOperations() {
+        valueOperations = redisTemplate.opsForValue();
+    }
 
     public Result<String, List<String>> validateInviteCode(String useremail, String inviteCode) {
         var expected = valueOperations.get(useremail + SUFFIX);
