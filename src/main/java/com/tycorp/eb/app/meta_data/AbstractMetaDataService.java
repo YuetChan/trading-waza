@@ -25,13 +25,15 @@ public class AbstractMetaDataService extends AbstractEbAppAggregateService {
 
     protected Set<Ticker> findTickersByNameOrCreate(Set<String> names){
         return names.stream().map(name ->
-                tickerRepo.save(tickerRepo.findByName(name).orElseGet(() -> tickerRepo.save(new Ticker(name)))))
+                tickerRepo.save(
+                        tickerRepo.findByName(name).orElseGet(() -> tickerRepo.save(new Ticker(name)))))
                 .collect(Collectors.toSet());
     }
 
     protected Set<Tag> findTagsByNameOrCreate(Set<String> names){
         return names.stream().map(name ->
-                tagRepo.save(tagRepo.findByName(name).orElseGet(() -> tagRepo.save(new Tag(name)))))
+                tagRepo.save(
+                        tagRepo.findByName(name).orElseGet(() -> tagRepo.save(new Tag(name)))))
                 .collect(Collectors.toSet());
     }
 

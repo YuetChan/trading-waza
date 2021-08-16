@@ -27,23 +27,29 @@ public class ThreadCreateEventListener extends AbstractThreadService {
         ThreadCreateDto createDto = event.getCreateDto();
 
         requestService.runRequest(event.getUUID(), () -> {
-            SubscriptionSlave slave = slaveRepo.findById(createDto.getSlaveId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Subscription not found"));
-            EbUser user = userRepo.findById(createDto.getUserId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+            SubscriptionSlave slave = slaveRepo.findById(createDto.getSlaveId()).orElseThrow(
+                    () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Subscription not found"));
+            EbUser user = userRepo.findById(createDto.getUserId()).orElseThrow(
+                    () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
             Thread.Builder builder = Thread.getBuilder();
 
             builder.setOperator(event.getLoginedEbUserDetail());
-            builder.setProcessedAt(createDto.getProcessedAt())
-                    .setSlave(slave)
-                    .setEbUser(user)
-                    .setTitle(createDto.getTitle()).setDescription(createDto.getDescription()).setContents(createDto.getContents())
+            builder.setSlave(slave)
                     .next()
                     .runIfSuccess(() -> {
                         Set<Ticker> tickers = findTickersByNameOrCreate(createDto.getTickerNames());
                         Set<Tag> tags = findTagsByNameOrCreate(createDto.getTagNames());
 
-                        masterRepo.save(slave.getMaster().addTags(tags).addTickers(tickers));
-                        threadRepo.save(builder.setTickers(tickers).setTags(tags).build());
+                        masterRepo.save(
+                                slave.getMaster()
+                                        .addTags(tags).addTickers(tickers));
+                        threadRepo.save(
+                                builder.setProcessedAt(createDto.getProcessedAt())
+                                        .setEbUser(user)
+                                        .setTitle(createDto.getTitle()).setDescription(createDto.getDescription()).setContents(createDto.getContents())
+                                        .setTickers(tickers).setTags(tags)
+                                        .build());
                     })
                     .consumeError(errs -> {
                         throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, errs.toString());
