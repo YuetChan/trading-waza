@@ -4,8 +4,10 @@ import com.google.gson.JsonObject;
 
 import com.tycorp.eb.app.thread.AbstractThreadService;
 import com.tycorp.eb.app.thread.dto.non_exposable.ThreadCreateDto;
+import com.tycorp.eb.app.thread.dto.non_exposable.ThreadUpdateDto;
 import com.tycorp.eb.app.thread.event.ThreadCreateEvent;
 import com.tycorp.eb.app.thread.dto.transformer.ThreadGetByFilterDtoTransformer;
+import com.tycorp.eb.app.thread.event.ThreadUpdateEvent;
 import com.tycorp.eb.domain.thread.model.Thread;
 import com.tycorp.eb.lib.gson.GsonHelper;
 import com.tycorp.eb.lib.uuid.UUIDHelper;
@@ -51,17 +53,6 @@ public class ThreadCrudAPI extends AbstractThreadService {
         return new ResponseEntity(resJson, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/{threadId}", produces = "application/json")
-    @ResponseBody
-    public ResponseEntity<JsonObject> threadsGetById(@PathVariable(name = "threadId") Long threadId) {
-        Thread thread = threadRepo.findById(threadId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Thread not found"));
-
-        JsonObject resJson = GsonHelper.getJsonObject();
-        resJson.add("thread", GsonHelper.createJsonElement(thread).getAsJsonObject());
-
-        return new ResponseEntity(resJson, HttpStatus.OK);
-    }
-
     @PostMapping(value = "", produces = "application/json")
     public ResponseEntity<JsonObject> threadCreate(@RequestBody ThreadCreateDto dto) {
         String requestUUID = UUIDHelper.generateUUID();
@@ -78,21 +69,21 @@ public class ThreadCrudAPI extends AbstractThreadService {
         return new ResponseEntity(resJson, HttpStatus.ACCEPTED);
     }
 
-//    @PatchMapping(value = "/{threadId}", produces = "application/json")
-//    public ResponseEntity<JsonObject> threadUpdate(@PathVariable(name = "threadId") long threadId,
-//                                                   @RequestBody ThreadUpdateDto dto) {
-//        String requestUUID = UUIDHelper.generateUUID();
-//        dto.setThreadId(threadId);
-//        eventPublisher.publishEvent(
-//                ThreadUpdateEvent.getBuilder()
-//                        .setOperator(authFacade.getAuthenticatedEbUserDetail())
-//                        .setSource(this).setUUID(requestUUID)
-//                        .setUpdateDto(dto)
-//                        .build());
-//
-//        var resJson = DefaultGsonHelper.getJsonObject();
-//        resJson.addProperty("requestUUID", requestUUID);
-//        return new ResponseEntity(resJson, HttpStatus.ACCEPTED);
-//    }
+    @PatchMapping(value = "/{threadId}", produces = "application/json")
+    public ResponseEntity<JsonObject> threadUpdate(@PathVariable(name = "threadId") long threadId,
+                                                   @RequestBody ThreadUpdateDto dto) {
+        String requestUUID = UUIDHelper.generateUUID();
+        dto.setThreadId(threadId);
+        eventPublisher.publishEvent(
+                ThreadUpdateEvent.getBuilder()
+                        .setOperator(authFacade.getAuthenticatedEbUserDetail())
+                        .setSource(this).setUUID(requestUUID)
+                        .setUpdateDto(dto)
+                        .build());
+
+        JsonObject resJson = GsonHelper.getJsonObject();
+        resJson.addProperty("requestUUID", requestUUID);
+        return new ResponseEntity(resJson, HttpStatus.ACCEPTED);
+    }
 
 }

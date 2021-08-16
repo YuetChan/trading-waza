@@ -33,12 +33,15 @@ public class ThreadUpdateEventListener extends AbstractThreadService {
                     .runIfSuccess(()-> {
                         Set<Ticker> addedTickers= findTickersByNameOrCreate(updateDto.getAddedTickerNames());
                         Set<Tag> addedTags = findTagsByNameOrCreate(updateDto.getAddedTagNames());
-
                         Set<Ticker> removedTickers= findTickersByNameOrCreate(updateDto.getRemovedTickerNames());
                         Set<Tag> removedTags = findTagsByNameOrCreate(updateDto.getRemovedTagNames());
 
-                        masterRepo.save(thread.getSlave().getMaster().addTickers(addedTickers).addTags(addedTags));
-                        threadRepo.save(thread.addTickers(addedTickers).addTags(addedTags).removeTags(removedTags).removeTickers(removedTickers));
+                        masterRepo.save(
+                                thread.getSlave().getMaster()
+                                        .addTickers(addedTickers).addTags(addedTags));
+                        threadRepo.save(
+                                thread.addTickers(addedTickers).addTags(addedTags)
+                                        .removeTags(removedTags).removeTickers(removedTickers));
                     })
                     .consumeError(errs -> {
                         throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, errs.toString());
