@@ -25,7 +25,8 @@ public class ThreadUpdateEventListener extends AbstractThreadService {
         ThreadUpdateDto updateDto = event.getUpdateDto();
 
         requestService.runRequest(event.getUUID(), () -> {
-            Thread thread =  threadRepo.findById(updateDto.getThreadId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Thread not found"));
+            Thread thread =  threadRepo.findById(updateDto.getThreadId()).orElseThrow(
+                    () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Thread not found"));
 
             thread.setOperator(event.getLoginedEbUserDetail());
             thread.update(updateDto.getTitle(), updateDto.getDescription(), updateDto.getContents())
@@ -33,12 +34,15 @@ public class ThreadUpdateEventListener extends AbstractThreadService {
                     .runIfSuccess(()-> {
                         Set<Ticker> addedTickers= findTickersByNameOrCreate(updateDto.getAddedTickerNames());
                         Set<Tag> addedTags = findTagsByNameOrCreate(updateDto.getAddedTagNames());
-
                         Set<Ticker> removedTickers= findTickersByNameOrCreate(updateDto.getRemovedTickerNames());
                         Set<Tag> removedTags = findTagsByNameOrCreate(updateDto.getRemovedTagNames());
 
-                        masterRepo.save(thread.getSlave().getMaster().addTickers(addedTickers).addTags(addedTags));
-                        threadRepo.save(thread.addTickers(addedTickers).addTags(addedTags).removeTags(removedTags).removeTickers(removedTickers));
+                        masterRepo.save(
+                                thread.getSlave().getMaster()
+                                        .addTickers(addedTickers).addTags(addedTags));
+                        threadRepo.save(
+                                thread.addTickers(addedTickers).addTags(addedTags)
+                                        .removeTags(removedTags).removeTickers(removedTickers));
                     })
                     .consumeError(errs -> {
                         throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, errs.toString());
