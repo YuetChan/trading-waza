@@ -18,6 +18,7 @@ public class EbUserRegisterAPI extends AbstractEbUserService {
 
         JsonObject resJson = GsonHelper.getJsonObject();
         resJson.addProperty("message", "Registration success");
+
         return new ResponseEntity(resJson, HttpStatus.CREATED);
     }
 

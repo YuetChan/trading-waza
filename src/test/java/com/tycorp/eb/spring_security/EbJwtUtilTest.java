@@ -1,5 +1,7 @@
 package com.tycorp.eb.spring_security;
 
+import com.tycorp.eb.domain.subscription.model.SubscriptionMaster;
+import com.tycorp.eb.domain.subscription.model.SubscriptionSlave;
 import com.tycorp.eb.domain.user.model.EbUser;
 import com.tycorp.eb.spring_security.jwt_auth.EbJwtUtil;
 import com.tycorp.eb.domain.user.model.LoginedEbUser;
@@ -12,10 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Profile;
 
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Profile("test")
-@DisplayName("com.tycorp.eb.eb_security.ebJwtUtilTest")
+@DisplayName("com.tycorp.eb.spring_security.ebJwtUtilTest")
 @SpringBootTest
 public class EbJwtUtilTest {
 
@@ -29,7 +34,12 @@ public class EbJwtUtilTest {
 
     @BeforeEach
     public void setup() {
-        EbUser ebUser = new EbUser(null, "cchan@ms3-inc.com", "", "cchan");
+        SubscriptionSlave slave = new SubscriptionSlave(new SubscriptionMaster());
+
+        EbUser ebUser = new EbUser(
+                Stream.of(slave).collect(Collectors.toSet()),
+                "cchan@eveningbrew.com", "",
+                "cchan");
         ebUser.setUserId(1l);
 
         loginedEbUser = new LoginedEbUser(ebUser);

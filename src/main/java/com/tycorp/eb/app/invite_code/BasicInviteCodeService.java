@@ -25,9 +25,9 @@ public class BasicInviteCodeService {
     }
 
     public Result<String, List<String>> validateInviteCode(String useremail, String inviteCode) {
-        var expected = valueOperations.get(useremail + SUFFIX);
-        return expected != null ?
-                (inviteCode.equals(expected) ? Result.success(inviteCode) : Result.error(Arrays.asList("Invalid invite code")))
+        String expectedCode = valueOperations.get(useremail + SUFFIX);
+        return expectedCode != null ?
+                (inviteCode.equals(expectedCode) ? Result.success(inviteCode) : Result.error(Arrays.asList("Invalid invite code")))
                 : Result.error(Arrays.asList("Invalid invite code"));
     }
 

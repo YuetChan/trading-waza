@@ -15,7 +15,7 @@ public class EbAuthenticationFacade {
     }
 
     public LoginedEbUserDetail getDefaultAuthenticatedEbUserDetail() {
-        var defaultUser = new EbUser(0l, "defaultUser@eveningbrew.com", EbUserRoleEnum.ADMIN);
+        EbUser defaultUser = new EbUser(0l, "defaultUser@eveningbrew.com", EbUserRoleEnum.ADMIN);
         return new LoginedEbUser(defaultUser);
     }
 
