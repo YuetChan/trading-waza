@@ -1,5 +1,6 @@
 package com.tycorp.eb.spring_security.jwt_auth;
 
+import com.google.gson.JsonObject;
 import com.tycorp.eb.lib.gson.GsonHelper;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
@@ -14,7 +15,7 @@ public class EbJwtAuthenticationFaileureHandler implements AuthenticationFailure
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException e)
             throws IOException, ServletException {
-        var resJson = GsonHelper.getJsonObject();
+        JsonObject resJson = GsonHelper.getJsonObject();
         resJson.addProperty("message", "Invalid/missing JWT");
 
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

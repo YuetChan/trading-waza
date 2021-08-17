@@ -19,6 +19,7 @@ public class EbUserLoginAPI extends AbstractEbUserService {
     public ResponseEntity<JsonObject> ebUserLogin(@RequestBody EbUserLoginDto dto) {
         JsonObject resJson = GsonHelper.getJsonObject();
         resJson.addProperty("jwt", login(dto.getUseremail(), dto.getPassword()));
+
         return new ResponseEntity(resJson, HttpStatus.OK);
     }
 

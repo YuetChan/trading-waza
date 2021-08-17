@@ -16,6 +16,7 @@ public class CrudRequestAPI extends AbstractEbAppAggregateService {
     public ResponseEntity<JsonObject> requestGetByUUID(@PathVariable(name = "UUID") String UUID) {
         JsonObject resJson= GsonHelper.getJsonObject();
         resJson.addProperty("status", requestService.getRequestByUUID(UUID));
+
         return new ResponseEntity(resJson, HttpStatus.ACCEPTED);
     }
 
