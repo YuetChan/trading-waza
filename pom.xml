@@ -11,15 +11,17 @@
 	<groupId>com.tycorp</groupId>
 	<artifactId>eb</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>eb</name>
-	<description>Eb project</description>
+	<name>Evening Brew Portal</name>
+	<description>Evening Brew Portal</description>
 
 	<properties>
 		<org.mapstruct.version>1.4.1.Final</org.mapstruct.version>
 		<org.projectlombok.version>1.16.18</org.projectlombok.version>
 		<org.jpamodelgen.version>5.3.7.Final</org.jpamodelgen.version>
 	</properties>
+
 	<dependencies>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -192,6 +194,7 @@
 					</compilerArgs>
 				</configuration>
 			</plugin>
+
 		</plugins>
 	</build>
 </project>
