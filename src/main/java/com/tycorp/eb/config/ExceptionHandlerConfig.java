@@ -1,7 +1,7 @@
 package com.tycorp.eb.config;
 
 import com.google.gson.JsonObject;
-import com.tycorp.eb.lib.gson.GsonHelper;
+import com.tycorp.eb.lib.GsonHelper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
