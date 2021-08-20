@@ -18,9 +18,8 @@ public class User extends AbstractDomainEntityTemplate implements UserDetails {
 
     @Transient
     private SignedInUserDetail signedInUserDetail;
-    public User setOperator(SignedInUserDetail signedInUserDetail) {
-        this.signedInUserDetail = signedInUserDetail;
-        return this;
+    public void setOperator(SignedInUserDetail signedInUserDetail) {
+        setSignedInUserDetail(signedInUserDetail);
     }
     @Transient
     public List<String> errs = new ArrayList();
@@ -63,11 +62,11 @@ public class User extends AbstractDomainEntityTemplate implements UserDetails {
             slaves.add(slave);
         });
 
-        this.useremail = useremail;
-        this.password = password;
-        userRole = UserRoleEnum.USER;
+        setUseremail(useremail);
+        setPassword(password);
+        setUserRole(UserRoleEnum.USER);
 
-        this.username = username;
+        setUsername(username);
 
         onUserCreated();
     }
@@ -76,14 +75,14 @@ public class User extends AbstractDomainEntityTemplate implements UserDetails {
     }
 
     public User(Long userId, String useremail, UserRoleEnum userRole) {
-        this.userId = userId;
-        this.useremail = useremail;
-        this.userRole = userRole;
+        setUserId(userId);
+        setUseremail(useremail);
+        setUserRole(userRole);
     }
 
     public boolean isPasswordValid(String password) {
-        if(!this.password.equals(password)) {
-            errs.add("Invalid crediential");
+        if(!getPassword().equals(password)) {
+            getErrs().add("Invalid crediential");
             return false;
         }
 
@@ -91,20 +90,34 @@ public class User extends AbstractDomainEntityTemplate implements UserDetails {
     }
 
     @Override
-    public String getUsername() { return username; }
+    public String getUsername() {
+        return username;
+    }
     @Override
-    public String getPassword() { return password; }
+    public String getPassword() {
+        return password;
+    }
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() { return null; }
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
 
     @Override
-    public boolean isAccountNonExpired() { return true; }
+    public boolean isAccountNonExpired() {
+        return true;
+    }
     @Override
-    public boolean isAccountNonLocked() { return meta.isLocked(); }
+    public boolean isAccountNonLocked() {
+        return meta.isLocked();
+    }
     @Override
-    public boolean isCredentialsNonExpired() { return meta.isPasswordExpired(); }
+    public boolean isCredentialsNonExpired() {
+        return meta.isPasswordExpired();
+    }
 
     @Override
-    public boolean isEnabled() { return true; }
+    public boolean isEnabled() {
+        return true;
+    }
 
 }

@@ -47,9 +47,9 @@ public class SubscriptionMaster {
     @Column(name = "uploaded_by")
     private Long uploadedBy = -1l;
 
-    public SubscriptionMaster(String name){
-        this.name = name;
-        uploadedAt = Instant.now().toEpochMilli();
+    public SubscriptionMaster(String name) {
+        setName(name);
+        setUploadedAt(Instant.now().toEpochMilli());
     }
 
     public void addSlave(SubscriptionSlave slave) {

@@ -1,5 +1,9 @@
 package com.tycorp.eb.domain;
 
+import lombok.AccessLevel;
+import lombok.Setter;
+
+@Setter(AccessLevel.PACKAGE)
 public class SignedInUser implements SignedInUserDetail {
 
     private Long userId;
@@ -7,9 +11,9 @@ public class SignedInUser implements SignedInUserDetail {
     private UserRoleEnum userRole;
 
     public SignedInUser(User user) {
-        userId = user.getUserId();
-        useremail = user.getUseremail();
-        userRole = user.getUserRole();
+        setUserId(user.getUserId());
+        setUseremail(user.getUseremail());
+        setUserRole(user.getUserRole());
     }
 
     @Override

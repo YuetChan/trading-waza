@@ -1,6 +1,8 @@
 package com.tycorp.eb.domain;
 
 import com.tycorp.eb.domain.event.AbstractDomainEntityEvent;
+import lombok.AccessLevel;
+import lombok.Getter;
 import org.springframework.data.domain.AfterDomainEventPublication;
 import org.springframework.data.domain.DomainEvents;
 
@@ -8,6 +10,7 @@ import javax.persistence.Transient;
 import java.util.ArrayList;
 import java.util.Collection;
 
+@Getter(AccessLevel.PRIVATE)
 public abstract class AbstractDomainEntityTemplate {
 
     @Transient
@@ -15,20 +18,20 @@ public abstract class AbstractDomainEntityTemplate {
 
     @DomainEvents
     private Collection<AbstractDomainEntityEvent> publishEvents() {
-        return events;
+        return getEvents();
     }
     @AfterDomainEventPublication
     private void onEventsPublished() {
-        events.clear();
+        getEvents().clear();
     }
 
     public boolean containsEventType(Class event) {
-        return events.stream().anyMatch(e -> e.getClass().equals(event));
+        return getEvents().stream().anyMatch(e -> e.getClass().equals(event));
     }
 
     protected void registerEvent(AbstractDomainEntityEvent event) {
         if (!containsEventType(event.getClass())) {
-            events.add(event);
+            getEvents().add(event);
         }
     }
 

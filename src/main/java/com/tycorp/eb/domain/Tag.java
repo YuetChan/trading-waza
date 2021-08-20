@@ -46,7 +46,7 @@ public class Tag {
     private Boolean active = true;
 
     public Tag(String name) {
-        this.name = name;
+        setName(name);
     }
 
     public void addMaster(SubscriptionMaster master) {

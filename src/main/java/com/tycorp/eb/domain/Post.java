@@ -25,7 +25,9 @@ public class Post extends AbstractDomainEntityTemplate {
 
     @Transient
     private SignedInUserDetail signedInUserDetail;
-    public void setOperator(SignedInUserDetail signedInUserDetail) { this.signedInUserDetail = signedInUserDetail; }
+    public void setOperator(SignedInUserDetail signedInUserDetail) {
+        setSignedInUserDetail(signedInUserDetail);
+    }
     @Transient
     public List<String> errs = new ArrayList();
 
@@ -86,35 +88,36 @@ public class Post extends AbstractDomainEntityTemplate {
 
     private Post(
             SignedInUserDetail signedInUserDetail,
-            Long processedAt, 
+            Long processedAt,
             SubscriptionSlave slave, User user,
             String title, String description, List<String> contents,
             Set<Ticker> tickers, Set<Tag> tags) {
-        this.signedInUserDetail = signedInUserDetail;
-        this.processedAt = processedAt;
-        
-        this.master = slave.getMaster();
-        this.slave = slave;
-        this.user = user;
+        setSignedInUserDetail(signedInUserDetail);
+        setProcessedAt(processedAt);
 
-        this.title = title;
-        this.description = description;
-        this.contents = contents;
+        setMaster(slave.getMaster());
+        setSlave(slave);
+        setUser(user);
 
-        this.tickers = tickers.stream().map(ticker -> {
-            ticker.addPost(this);
-            return ticker;
-        }).collect(Collectors.toSet());
+        setTitle(title);
+        setDescription(description);
+        setContents(contents);
 
-        this.tags = tags.stream().map(tag -> {
-            tag.addPost(this);
-            return tag;
-        }).collect(Collectors.toSet());
+        setTickers(
+                tickers.stream().map(ticker -> {
+                    ticker.addPost(this);
+                    return ticker;
+                }).collect(Collectors.toSet()));
+        setTags(
+                tags.stream().map(tag -> {
+                    tag.addPost(this);
+                    return tag;
+                }).collect(Collectors.toSet()));
 
-        uploadedBy = signedInUserDetail.getUserId();
-        uploadedAt = Instant.now().toEpochMilli();
-        updatedBy = uploadedBy;
-        updatedAt = uploadedAt;
+        setUpdatedBy(signedInUserDetail.getUserId());
+        setUpdatedAt(Instant.now().toEpochMilli());
+        setUploadedBy(getUpdatedBy());
+        setUploadedAt(getUpdatedAt());
         
         onPostCreated();
     }
