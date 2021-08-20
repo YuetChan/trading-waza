@@ -68,19 +68,14 @@ public class SubscriptionSlave extends AbstractDomainEntityTemplate {
     private Long uploadedAt;
     @Column(name = "uploaded_by")
     private Long uploadedBy = -1l;
-    @Column(name = "updated_at")
-    private Long updatedAt;
-    @Column(name = "updated_by")
-    private Long updatedBy = -1l;
 
     public SubscriptionSlave(SubscriptionMaster master) {
         master.addSlave(this);
         setMaster(master);
 
-        setExpiredAt(Instant.now().toEpochMilli());
-
-        setUploadedAt(getExpiredAt());
-        setUpdatedAt(getUploadedAt());
+        Long nowInEpochMilli = Instant.now().toEpochMilli();
+        setExpiredAt(nowInEpochMilli);
+        setUploadedAt(nowInEpochMilli);
 
         onSubscriptionCreated();
     }
@@ -132,7 +127,6 @@ public class SubscriptionSlave extends AbstractDomainEntityTemplate {
         }else {
             throw new DomainInvariantException("Cant extend subscription(Require authorization)");
         }
-
     }
     private void onSubscriptionExtended() {
         registerEvent(new SubscriptionExpiredEvent(this, this));
