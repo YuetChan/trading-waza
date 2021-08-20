@@ -1,7 +1,5 @@
 package com.tycorp.eb.lib;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Random;

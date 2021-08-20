@@ -46,7 +46,7 @@ public class Ticker {
     private Boolean active = true;
 
     public Ticker(String name) {
-        this.name = name;
+        setName(name);
     }
 
     public void addMaster(SubscriptionMaster master) {

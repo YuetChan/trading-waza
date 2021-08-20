@@ -75,12 +75,12 @@ public class SubscriptionSlave extends AbstractDomainEntityTemplate {
 
     public SubscriptionSlave(SubscriptionMaster master) {
         master.addSlave(this);
-        this.master = master;
+        setMaster(master);
 
-        expiredAt = Instant.now().toEpochMilli();
+        setExpiredAt(Instant.now().toEpochMilli());
 
-        uploadedAt = expiredAt;
-        updatedAt = uploadedAt;
+        setUploadedAt(getExpiredAt());
+        setUpdatedAt(getUploadedAt());
 
         onSubscriptionCreated();
     }
@@ -89,7 +89,6 @@ public class SubscriptionSlave extends AbstractDomainEntityTemplate {
     }
 
     public boolean isOwner(User user) {
-        System.out.println(user);
         return user.getUserId() == getOwner().getUserId();
     }
 
@@ -98,7 +97,7 @@ public class SubscriptionSlave extends AbstractDomainEntityTemplate {
     }
 
     public boolean isExpired() {
-        return Instant.ofEpochMilli(expiredAt).isBefore(Instant.now());
+        return Instant.ofEpochMilli(getExpiredAt()).isBefore(Instant.now());
     }
 
     public void addOwner(User owner) {
@@ -121,8 +120,8 @@ public class SubscriptionSlave extends AbstractDomainEntityTemplate {
         registerEvent(new SubscriptionPermitsAddedEvent(this, this));
     }
     public boolean canAddPermit() {
-        return signedInUserDetail != null
-                && signedInUserDetail.getUserRole().equals(UserRoleEnum.ADMIN)
+        return getSignedInUserDetail() != null
+                && getSignedInUserDetail().getUserRole().equals(UserRoleEnum.ADMIN)
                 ? true : false;
     }
 
@@ -139,12 +138,14 @@ public class SubscriptionSlave extends AbstractDomainEntityTemplate {
         registerEvent(new SubscriptionExpiredEvent(this, this));
     }
     public boolean canExtend() {
-        return signedInUserDetail != null
-                && signedInUserDetail.getUserRole().equals(UserRoleEnum.ADMIN)
+        return getSignedInUserDetail() != null
+                && getSignedInUserDetail().getUserRole().equals(UserRoleEnum.ADMIN)
                 ? true : false;
     }
 
     @Override
-    public boolean equals(Object other) { return slaveId == ((SubscriptionSlave)other).getSlaveId(); }
+    public boolean equals(Object other) {
+        return getSlaveId() == ((SubscriptionSlave)other).getSlaveId();
+    }
 
 }
