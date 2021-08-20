@@ -9,10 +9,9 @@ import java.util.List;
 
 public class GsonHelper {
 
-    public static GsonBuilder builder =
-            new GsonBuilder()
-                    .excludeFieldsWithoutExposeAnnotation()
-                    .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeToJsonSerializer());
+    public static GsonBuilder builder = new GsonBuilder()
+            .excludeFieldsWithoutExposeAnnotation()
+            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeToJsonSerializer());
 
     public static JsonElement createJsonElement(Object obj) {
         return new JsonParser().parse(builder.create().toJson(obj));
