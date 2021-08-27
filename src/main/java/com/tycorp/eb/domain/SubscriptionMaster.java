@@ -1,7 +1,6 @@
 package com.tycorp.eb.domain;
 
 import lombok.*;
-import no.gorandalum.fluentresult.Result;
 
 import javax.persistence.*;
 import java.time.Instant;
