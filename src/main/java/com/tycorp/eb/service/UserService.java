@@ -7,7 +7,6 @@ import com.tycorp.eb.domain.User;
 import com.tycorp.eb.domain.SignedInUser;
 import com.tycorp.eb.repository.UserRepository;
 import com.tycorp.eb.spring_security.jwt_auth.JwtUtil;
-import no.gorandalum.fluentresult.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

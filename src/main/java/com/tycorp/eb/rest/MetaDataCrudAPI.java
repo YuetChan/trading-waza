@@ -30,10 +30,7 @@ public class MetaDataCrudAPI {
         Page<Ticker> page = tickerRepo.findByMasterIdAndNameLike(1l, name  + "%", PageRequest.of(pageNum, pageSize));
 
         JsonObject resJson = GsonHelper.getJsonObject();
-        resJson.add(
-                "tickers",
-                GsonHelper.createJsonElement(page.getContent())
-                        .getAsJsonArray());
+        resJson.add("tickers", GsonHelper.createJsonElement(page.getContent()).getAsJsonArray());
         resJson.addProperty("totalPages", page.getTotalPages());
         resJson.addProperty("totalElements", page.getTotalElements());
 
@@ -47,10 +44,7 @@ public class MetaDataCrudAPI {
         Page<Tag> page = tagRepo.findByMasterIdAndNameLike(1l, name  + "%", PageRequest.of(pageNum, pageSize));
 
         JsonObject resJson = GsonHelper.getJsonObject();
-        resJson.add(
-                "tags",
-                GsonHelper.createJsonElement(page.getContent())
-                        .getAsJsonArray());
+        resJson.add("tags", GsonHelper.createJsonElement(page.getContent()).getAsJsonArray());
         resJson.addProperty("totalPages", page.getTotalPages());
         resJson.addProperty("totalElements", page.getTotalElements());
 
