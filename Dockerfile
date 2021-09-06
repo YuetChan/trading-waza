@@ -1,5 +1,5 @@
-FROM openjdk:8-jdk-alpine
-EXPOSE 8080
-WORKDIR /app
-COPY target/eb-0.0.1-SNAPSHOT.jar .
-ENTRYPOINT [ "java", "-jar", "eb-0.0.1-SNAPSHOT.jar" ]
+FROM adoptopenjdk/openjdk8:latest
+ARG JAR_FILE=target/eb-0.0.1-SNAPSHOT.jar
+WORKDIR /opt/app
+COPY ${JAR_FILE} eb-portal.jar
+ENTRYPOINT [ "java", "-jar", "eb-portal.jar" ]
