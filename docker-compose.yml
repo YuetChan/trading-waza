@@ -1,0 +1,39 @@
+version: "3"
+services:
+  eb-mariadb:
+    image: mariadb:latest
+    container_name: eb-mariadb
+    restart: always
+    expose:
+      - "3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: eb
+    volumes:
+      - ./ebdbdata:/var/lib/mysql
+    networks:
+      - eb-net 
+  eb-redis:
+    image: "redis:alpine"
+    container_name: eb-redis
+    restart: always
+    expose:
+      - "6379"
+    command: redis-server
+    networks:
+      - eb-net
+  eb-portal:
+    image: tycorp/eb-portal-spring-app:latest
+    container_name: eb-portal
+    restart: always
+    ports:
+      - "8080:8080"
+    networks:
+      - eb-net  
+    depends_on:
+      - eb-mariadb
+      - eb-redis
+networks:
+  eb-net:
+    name: eb-net
+
