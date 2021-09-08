@@ -1,9 +1,9 @@
 package com.tycorp.eb.config;
 
-import com.tycorp.eb.spring_security.jwt_auth.EbJwtAuthenticationFaileureHandler;
-import com.tycorp.eb.spring_security.jwt_auth.EbJwtAuthenticationFilter;
-import com.tycorp.eb.spring_security.jwt_auth.EbJwtAuthenticationProvider;
-import com.tycorp.eb.spring_security.jwt_auth.EbJwtAuthenticationSuccessHandler;
+import com.tycorp.eb.spring_security.jwt_auth.JwtAuthenticationFaileureHandler;
+import com.tycorp.eb.spring_security.jwt_auth.JwtAuthenticationFilter;
+import com.tycorp.eb.spring_security.jwt_auth.JwtAuthenticationProvider;
+import com.tycorp.eb.spring_security.jwt_auth.JwtAuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,7 +46,7 @@ public class WebSecConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring()
-                .antMatchers(HttpMethod.POST, "/users/login")
+                .antMatchers(HttpMethod.POST, "/users/signin")
                 .antMatchers(HttpMethod.POST, "/users/register");
     }
 
@@ -64,29 +64,29 @@ public class WebSecConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Autowired
-    private EbJwtAuthenticationProvider ebJwtAuthenticationProvider;
+    private JwtAuthenticationProvider jwtAuthenticationProvider;
     @Autowired
     private AuthenticationSuccessHandler ebJwtAuthenticationSuccessHandler;
     @Autowired
     private AuthenticationFailureHandler ebJwtAuthenticationFailureHandler;
 
     public AbstractAuthenticationProcessingFilter getEbJwtAuthenticationFilter() {
-        EbJwtAuthenticationFilter ebJwtAuthenticationFilter = new EbJwtAuthenticationFilter(
-                new ProviderManager(Arrays.asList(ebJwtAuthenticationProvider)));
-        ebJwtAuthenticationFilter.setAuthenticationSuccessHandler(ebJwtAuthenticationSuccessHandler);
-        ebJwtAuthenticationFilter.setAuthenticationFailureHandler(ebJwtAuthenticationFailureHandler);
+        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(
+                new ProviderManager(Arrays.asList(jwtAuthenticationProvider)));
+        jwtAuthenticationFilter.setAuthenticationSuccessHandler(ebJwtAuthenticationSuccessHandler);
+        jwtAuthenticationFilter.setAuthenticationFailureHandler(ebJwtAuthenticationFailureHandler);
 
-        return ebJwtAuthenticationFilter;
+        return jwtAuthenticationFilter;
     }
 
     @Bean("ebJwtAuthenticationSuccessHandler")
     public AuthenticationSuccessHandler getEbJwtAuthenticationSuccessHandler() {
-        return new EbJwtAuthenticationSuccessHandler();
+        return new JwtAuthenticationSuccessHandler();
     }
 
     @Bean("ebJwtAuthenticationFailureHandler")
     public AuthenticationFailureHandler getEbAuthenticationFailureHandler() {
-        return new EbJwtAuthenticationFaileureHandler();
+        return new JwtAuthenticationFaileureHandler();
     }
 
 }

@@ -1,6 +1,7 @@
 package com.tycorp.eb.config;
 
-import com.tycorp.eb.lib.gson.GsonHelper;
+import com.google.gson.JsonObject;
+import com.tycorp.eb.lib.GsonHelper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -14,7 +15,7 @@ public class ExceptionHandlerConfig {
 
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<Object> handleResponseStatusException(HttpServletRequest req, Exception e) {
-        var resJson = GsonHelper.getJsonObject();
+        JsonObject resJson = GsonHelper.getJsonObject();
         resJson.addProperty("message", ((ResponseStatusException) e).getReason());
         return new ResponseEntity(resJson, ((ResponseStatusException) e).getStatus());
     }
@@ -22,7 +23,7 @@ public class ExceptionHandlerConfig {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleException(HttpServletRequest req, Exception e) {
         e.printStackTrace();
-        var resJson = GsonHelper.getJsonObject();
+        JsonObject resJson = GsonHelper.getJsonObject();
         resJson.addProperty("message", "Unknown error");
         return new ResponseEntity(resJson, HttpStatus.INTERNAL_SERVER_ERROR);
     }
