@@ -2,16 +2,19 @@
 Backend application for uploading and querying posts.
 
 ### Requirements
-- Mariadb running locally
-- Redis running locally
-### Build
-    mvn package
+- docker and docker compose installed
+### Build & Run
+    docker-compose up
 
 ### Usage
-Sign up
+Signing up
 
     First, create an invite code in redis.
     Then, hit the sign up api with the useremail, password, username and invite code.
+
+Signing in
+
+    Hit the sign in api with the credential from sign up 
 
 Uploading posts
     
