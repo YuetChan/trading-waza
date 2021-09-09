@@ -51,8 +51,7 @@ public class PostCrudAPI {
         resJson.add(
                 "posts",
                 GsonHelper.createJsonElement(
-                        page.getContent()
-                                .stream().map(post -> PostGetByFilterDtoTransformer.INSTANCE.transform(post))
+                        page.getContent().stream().map(post -> PostGetByFilterDtoTransformer.INSTANCE.transform(post))
                                 .collect(Collectors.toList()))
                         .getAsJsonArray());
         resJson.addProperty("totalPages", page.getTotalPages());
