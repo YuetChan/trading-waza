@@ -7,22 +7,44 @@ Backend application for uploading and querying posts.
     docker-compose up
 
 ### Usage
-Signing up
+Sign up
 
     First, create an invite code in redis.
-    Then, hit the sign up api with the useremail, password, username and invite code.
+    Then, Post /register
+        {
+            "useremail" : "example@gmail.com",
+            "password" : "password",
+            "username" : "username",
+            "inviteCode": "code"
+        } 
 
-Signing in
+Sign in
 
-    Hit the sign in api with the credential from sign up 
+    Post /signin
+        {
+            "useremail" : "example@gmail.com",
+            "password" : "password"
+        }    
 
-Uploading posts
+Upload posts
     
-    Hit the create post api with reqired request body.
+    Post /posts
+        {
+            "title": "",
+            "description": "",
+            "contents": [],
+            
+            "tickers": ["AAPL", "MSFT"],
+            "tags": ["bullish engulfing"],
+        
+            "processedAt": 1628547559002,
+            "slaveId": 1,
+            "userId": 1
+        }
     
-Querying posts
+Query posts
 
-    Hit the get post by filter api with reqired query params.    
+    Get /post?daysAgo=1&tags=bullish engulfing&ticker=AAPL&pageNum=0&pageSize=10    
 
 
 Due to the nature of the application, currently portal does not support any delete operation.
