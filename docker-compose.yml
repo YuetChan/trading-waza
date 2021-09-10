@@ -10,7 +10,7 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: eb
     volumes:
-      - ./ebdbdata:/var/lib/mysql
+      - ../ebdbdata:/var/lib/mysql
     networks:
       - eb-net 
   eb-redis:

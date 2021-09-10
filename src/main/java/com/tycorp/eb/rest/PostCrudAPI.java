@@ -60,7 +60,7 @@ public class PostCrudAPI {
         return new ResponseEntity(resJson, HttpStatus.OK);
     }
 
-    @PostMapping(value = "", produces = "application/json")
+    @PostMapping(value = "", produces = "application/json", consumes = "application/json")
     public ResponseEntity<JsonObject> postCreate(@RequestBody PostCreateDto createDto) {
         String requestUUID = UUIDHelper.generateUUID();
         eventPublisher.publishEvent(
