@@ -5,11 +5,15 @@ Backend application for uploading and querying posts.
 - docker and docker compose installed
 ### Build & Run
     docker-compose up
-
+    
+A "ebdbdata" directory would be created in parent directory for storing sql data
 ### Usage
 Sign up
 
     First, create an invite code in redis.
+        $ docker exec -it <redis container name/id> sh
+        $ redis-cli
+        $ Set useremail:INVITE_CODE <Value>
     Then, Post /register
         {
             "useremail" : "example@gmail.com",
