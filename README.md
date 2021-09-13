@@ -11,15 +11,20 @@ A "ebdbdata" directory would be created in parent directory for storing sql data
 Sign up
 
     First, create an invite code in redis.
-        $ docker exec -it <redis container name/id> sh
+        $ docker exec -it eb-redis sh
         $ redis-cli
-        $ Set useremail:INVITE_CODE <Value>
-    Then, Post /register
+        $ set useremail:INVITE_CODE <value>
+    Then, create a deafult master in mariadb
+        $ docker exec -it eb-mariadb sh
+        $ mysql -u <username> -p <password> 
+        $ use eb
+        $ insert into master(master_id, name, uploaded_at, uploaded_by) values (1, "default_master", -1, -1);    
+    Finally, Post /register
         {
+            "inviteCode": "code",
             "useremail" : "example@gmail.com",
             "password" : "password",
-            "username" : "username",
-            "inviteCode": "code"
+            "username" : "username"
         } 
 
 Sign in
