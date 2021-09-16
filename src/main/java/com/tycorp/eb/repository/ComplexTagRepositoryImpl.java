@@ -33,45 +33,36 @@ public class ComplexTagRepositoryImpl implements  ComplexTagRepository{
 
 
         SetJoin tag_masters_join = rTag.join(Tag_.masters, JoinType.LEFT);
-        Predicate matchMaster = masterId == null?
-                cBuilder.conjunction() : cBuilder.equal(tag_masters_join.get(SubscriptionMaster_.masterId), masterId);
+        Predicate matchMaster = masterId == null ? cBuilder.conjunction() : cBuilder.equal(tag_masters_join.get(SubscriptionMaster_.masterId), masterId);
 
         Predicate matchPattern = name == null ? cBuilder.conjunction() : cBuilder.like(rTag.get(Tag_.name), name);
-
-
         Predicate matchAll = cBuilder.and(matchMaster, matchPattern);
 
         List<Tag> matchedTags = em.createQuery(cqTag.select(rTag).where(matchAll).distinct(true))
-                .setFirstResult(pageable.getPageNumber())
-                .setMaxResults(pageable.getPageSize())
+                .setFirstResult(pageable.getPageNumber()).setMaxResults(pageable.getPageSize())
                 .getResultList();
 
 
         CriteriaQuery<Long> cqLong = cBuilder.createQuery(Long.class);
         Root<Tag> rTag_count = cqLong.from(Tag.class);
 
-
         SetJoin<Tag, SubscriptionMaster> tag_masters_join_count = rTag_count.join(Tag_.masters, JoinType.LEFT);
         Predicate matchMaster_count = masterId == null?
                 cBuilder.conjunction() : cBuilder.equal(tag_masters_join_count.get(SubscriptionMaster_.masterId), masterId);
 
         Predicate matchPattern_count = name == null ? cBuilder.conjunction() : cBuilder.like(rTag_count.get(Tag_.name), name);
-
-
         Predicate matchAll_count = cBuilder.and(matchMaster_count, matchPattern_count);
 
-        Long matchedCount = em.createQuery(
-                cqLong.select(cBuilder.count(rTag_count)).where(matchAll_count).distinct(true)).getSingleResult();
+        Long matchedCount = em.createQuery(cqLong.select(cBuilder.count(rTag_count)).where(matchAll_count).distinct(true))
+                .getSingleResult();
+
 
         return new PageImpl(matchedTags, pageable, matchedCount);
     }
 
     @Override
     public Set<Tag> findAllByNamesOrCreate(Set<String> names) {
-        return names.stream().map(name ->
-                tagRepo.save(
-                        tagRepo.findByName(name)
-                                .orElseGet(() -> tagRepo.save(new Tag(name)))))
+        return names.stream().map(name -> tagRepo.save(tagRepo.findByName(name).orElseGet(() -> new Tag(name))))
                 .collect(Collectors.toSet());
     }
 

@@ -23,9 +23,7 @@ public class JwtConfig {
             throws KeyStoreException, UnrecoverableKeyException, NoSuchAlgorithmException,
             IOException, CertificateException {
         KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
-        keyStore.load(
-                getClass().getClassLoader().getResourceAsStream("evening-brew.jks"),
-                keystorePwd.toCharArray());
+        keyStore.load(getClass().getClassLoader().getResourceAsStream("evening-brew.jks"), keystorePwd.toCharArray());
 
         return keyStore.getKey(keystoreAlias, keystorePwd.toCharArray());
     }

@@ -19,10 +19,7 @@ public class UserRegisterAPI {
 
     @PostMapping(value = "/register", produces = "application/json")
     public ResponseEntity<JsonObject> userRegister(@RequestBody UserRegisterDto registerDto) {
-        userSvc.register(
-                registerDto.getInviteCode(),
-                registerDto.getUseremail(), registerDto.getPassword(),
-                registerDto.getUsername());
+        userSvc.register(registerDto.getInviteCode(), registerDto.getUseremail(), registerDto.getPassword(), registerDto.getUsername());
 
         JsonObject resJson = GsonHelper.getJsonObject();
         resJson.addProperty("message", "Registration success");

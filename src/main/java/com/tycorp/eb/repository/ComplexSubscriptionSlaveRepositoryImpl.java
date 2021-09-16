@@ -13,8 +13,8 @@ public class ComplexSubscriptionSlaveRepositoryImpl implements ComplexSubscripti
 
     @Override
     public Set<SubscriptionSlave> getDefaultSubscriptionSlaves() {
-        return masterRepo.getDefaultSubscriptionMasters().stream().map(
-                master -> new SubscriptionSlave(master)).collect(Collectors.toSet());
+        return masterRepo.getDefaultSubscriptionMasters().stream().map(master -> new SubscriptionSlave(master))
+                .collect(Collectors.toSet());
     }
 
 }
