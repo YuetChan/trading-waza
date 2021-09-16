@@ -15,6 +15,7 @@ public class ExceptionHandlerConfig {
 
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<Object> handleResponseStatusException(HttpServletRequest req, Exception e) {
+        e.printStackTrace();
         JsonObject resJson = GsonHelper.getJsonObject();
         resJson.addProperty("message", ((ResponseStatusException) e).getReason());
         return new ResponseEntity(resJson, ((ResponseStatusException) e).getStatus());

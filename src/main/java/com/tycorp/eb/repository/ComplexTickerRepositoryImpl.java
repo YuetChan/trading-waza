@@ -33,45 +33,36 @@ public class ComplexTickerRepositoryImpl implements  ComplexTickerRepository {
 
 
         SetJoin<Ticker, SubscriptionMaster> ticker_masters_join = rTicker.join(Ticker_.masters, JoinType.LEFT);
-        Predicate matchMaster = masterId == null?
-                cBuilder.conjunction() : cBuilder.equal(ticker_masters_join.get(SubscriptionMaster_.masterId), masterId);
+        Predicate matchMaster = masterId == null? cBuilder.conjunction() : cBuilder.equal(ticker_masters_join.get(SubscriptionMaster_.masterId), masterId);
 
         Predicate matchPattern = name == null ? cBuilder.conjunction() : cBuilder.like(rTicker.get(Ticker_.name), name);
-
-
         Predicate matchAll = cBuilder.and(matchMaster, matchPattern);
 
         List<Ticker> matchedTickers = em.createQuery(cqTicker.select(rTicker).where(matchAll).distinct(true))
-                .setFirstResult(pageable.getPageNumber())
-                .setMaxResults(pageable.getPageSize())
+                .setFirstResult(pageable.getPageNumber()).setMaxResults(pageable.getPageSize())
                 .getResultList();
 
 
         CriteriaQuery<Long> cqLong = cBuilder.createQuery(Long.class);
         Root<Ticker> rTicker_count = cqLong.from(Ticker.class);
 
-
         SetJoin<Ticker, SubscriptionMaster> ticker_masters_join_count = rTicker_count.join(Ticker_.masters, JoinType.LEFT);
         Predicate matchMaster_count = masterId == null?
                 cBuilder.conjunction() : cBuilder.equal(ticker_masters_join_count.get(SubscriptionMaster_.masterId), masterId);
 
         Predicate matchPattern_count = name == null ? cBuilder.conjunction() : cBuilder.like(rTicker_count.get(Ticker_.name), name);
-
-
         Predicate matchAll_count = cBuilder.and(matchMaster_count, matchPattern_count);
 
-        Long matchedCount = em.createQuery(
-                cqLong.select(cBuilder.count(rTicker_count)).where(matchAll_count).distinct(true)).getSingleResult();
+        Long matchedCount = em.createQuery(cqLong.select(cBuilder.count(rTicker_count)).where(matchAll_count).distinct(true))
+                .getSingleResult();
+
 
         return new PageImpl(matchedTickers, pageable, matchedCount);
     }
 
     @Override
     public Set<Ticker> findAllByNamesOrCreate(Set<String> names) {
-        return names.stream().map(name ->
-                tickerRepo.save(
-                        tickerRepo.findByName(name)
-                                .orElseGet(() -> tickerRepo.save(new Ticker(name)))))
+        return names.stream().map(name -> tickerRepo.save(tickerRepo.findByName(name).orElseGet(() -> new Ticker(name))))
                 .collect(Collectors.toSet());
     }
 

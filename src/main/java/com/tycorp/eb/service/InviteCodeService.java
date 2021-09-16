@@ -23,9 +23,7 @@ public class InviteCodeService {
 
     public boolean isInviteCodeValid(String useremail, String inviteCode) {
         String expectedCode = valueOperations.get(useremail + SUFFIX);
-        return expectedCode != null ?
-                (inviteCode.equals(expectedCode) ? true : false)
-                : false;
+        return expectedCode != null ? (inviteCode.equals(expectedCode) ? true : false) : false;
     }
 
 }

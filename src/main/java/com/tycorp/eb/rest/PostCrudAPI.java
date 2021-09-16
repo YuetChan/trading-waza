@@ -2,6 +2,7 @@ package com.tycorp.eb.rest;
 
 import com.google.gson.JsonObject;
 
+import com.tycorp.eb.rest.dto.exposable.PostGetByFilterDto;
 import com.tycorp.eb.rest.dto.non_exposable.PostCreateDto;
 import com.tycorp.eb.rest.event.PostCreateEvent;
 import com.tycorp.eb.rest.dto.transformer.PostGetByFilterDtoTransformer;
@@ -21,6 +22,8 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.tycorp.eb.repository.ComplexSubscriptionMasterRepository.DEFAULT_SUBSCRIPTION_MASTER_ID;
 
 @RestController
 @RequestMapping(value = "/posts")
@@ -42,18 +45,14 @@ public class PostCrudAPI {
                                                        @RequestParam(required = false, name = "pageNum", defaultValue = "0") int pageNum,
                                                        @RequestParam(required = false, name = "pageSize", defaultValue = "20") int pageSize) {
         Long processedAt = Instant.now().minus(daysAgo, ChronoUnit.DAYS).toEpochMilli();
-        Page<Post> page = postRepo.findByFilter(
-                processedAt, 1l,
-                tickers, tags,
+        Page<Post> page = postRepo.findByFilter(processedAt, DEFAULT_SUBSCRIPTION_MASTER_ID, tickers, tags,
                 PageRequest.of(pageNum, pageSize));
 
+        List<PostGetByFilterDto> getDtos = page.getContent().stream().map(post -> PostGetByFilterDtoTransformer.INSTANCE.transform(post))
+                .collect(Collectors.toList());
+
         JsonObject resJson = GsonHelper.getJsonObject();
-        resJson.add(
-                "posts",
-                GsonHelper.createJsonElement(
-                        page.getContent().stream().map(post -> PostGetByFilterDtoTransformer.INSTANCE.transform(post))
-                                .collect(Collectors.toList()))
-                        .getAsJsonArray());
+        resJson.add("posts", GsonHelper.createJsonElement(getDtos).getAsJsonArray());
         resJson.addProperty("totalPages", page.getTotalPages());
         resJson.addProperty("totalElements", page.getTotalElements());
 

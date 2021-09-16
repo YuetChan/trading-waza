@@ -45,10 +45,10 @@ public class PostCreateEventListener {
             try {
                 PostCreateDto createDto = event.getCreateDto();
 
-                SubscriptionSlave slave = slaveRepo.findById(createDto.getSlaveId())
-                        .orElseThrow(() -> new DomainEntityNotFoundException("Subscription not found"));
-                User user = userRepo.findById(createDto.getUserId())
-                        .orElseThrow(() -> new DomainEntityNotFoundException("User not found"));
+                SubscriptionSlave slave = slaveRepo.findById(createDto.getSlaveId()).orElseThrow(
+                        () -> new DomainEntityNotFoundException("Subscription not found"));
+                User user = userRepo.findById(createDto.getUserId()).orElseThrow(
+                        () -> new DomainEntityNotFoundException("User not found"));
 
                 Set<Ticker> tickers = tickerRepo.findAllByNamesOrCreate(createDto.getTickers());
                 Set<Tag> tags = tagRepo.findAllByNamesOrCreate(createDto.getTags());

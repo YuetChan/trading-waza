@@ -16,41 +16,28 @@ public class ComplexPostRepositoryImpl implements ComplexPostRepository {
     protected EntityManager em;
 
     @Override
-    public Page<Post> findByFilter(Long processedAt, Long masterId,
-                                   List<String> tickers, List<String> tags,
-                                   Pageable pageable) {
+    public Page<Post> findByFilter(Long processedAt, Long masterId, List<String> tickers, List<String> tags, Pageable pageable) {
         CriteriaBuilder cBuilder = em.getCriteriaBuilder();
 
         CriteriaQuery<Post> cqPost = cBuilder.createQuery(Post.class);
         Root<Post> rPost = cqPost.from(Post.class);
 
-
         Join<Post, SubscriptionMaster> post_masters_join = rPost.join(Post_.master, JoinType.LEFT);
         Predicate matchMaster = masterId == null?
                 cBuilder.conjunction() : cBuilder.equal(post_masters_join.get(SubscriptionMaster_.masterId), masterId);
 
-
         SetJoin<Post, Ticker> posts_tickers_join = rPost.join(Post_.tickers, JoinType.LEFT);
         Predicate matchTickers = tickers == null ?
-                cBuilder.conjunction()
-                : cBuilder.and(
-                        tickers.stream().map(ticker -> cBuilder.equal(posts_tickers_join.get(Ticker_.name), ticker))
-                                 .toArray(Predicate[]::new));
+                cBuilder.conjunction() : cBuilder.and(tickers.stream().map(ticker -> cBuilder.equal(posts_tickers_join.get(Ticker_.name), ticker))
+                .toArray(Predicate[]::new));
 
         SetJoin<Post, Tag> posts_tags_join = rPost.join(Post_.tags, JoinType.LEFT);
         Predicate matchTags = tags == null ?
-                cBuilder.conjunction()
-                : cBuilder.and(
-                        tags.stream().map(tag -> cBuilder.equal(posts_tags_join.get(Tag_.name), tag))
-                              .toArray(Predicate[]::new));
+                cBuilder.conjunction() : cBuilder.and(tags.stream().map(tag -> cBuilder.equal(posts_tags_join.get(Tag_.name), tag))
+                .toArray(Predicate[]::new));
 
         Predicate matchProcessedAt = cBuilder.greaterThanOrEqualTo(rPost.get(Post_.processedAt), processedAt);
-
-
-        Predicate matchAll = cBuilder.and(
-                matchMaster,
-                matchTickers, matchTags,
-                matchProcessedAt);
+        Predicate matchAll = cBuilder.and(matchMaster, matchTickers, matchTags, matchProcessedAt);
 
         List<Post> matchedPosts = em.createQuery(cqPost.select(rPost).where(matchAll).distinct(true))
                 .setFirstResult(pageable.getPageNumber())
@@ -61,37 +48,25 @@ public class ComplexPostRepositoryImpl implements ComplexPostRepository {
         CriteriaQuery<Long> cqLong = cBuilder.createQuery(Long.class);
         Root<Post> rPost_count = cqLong.from(Post.class);
 
-
         Join<Post, SubscriptionMaster> posts_master_join_count = rPost_count.join(Post_.master, JoinType.LEFT);
         Predicate matchMaster_count = masterId == null ?
                 cBuilder.conjunction() : cBuilder.equal(posts_master_join_count.get(SubscriptionMaster_.masterId), masterId);
 
-
         SetJoin<Post, Ticker> posts_tickers_join_count = rPost_count.join(Post_.tickers, JoinType.LEFT);
         Predicate matchTickers_count = tickers == null ?
-                cBuilder.conjunction()
-                : cBuilder.and(
-                        tickers.stream().map(ticker -> cBuilder.equal(posts_tickers_join_count.get(Ticker_.name), ticker))
-                                 .toArray(Predicate[]::new));
+                cBuilder.conjunction() : cBuilder.and(tickers.stream().map(ticker -> cBuilder.equal(posts_tickers_join_count.get(Ticker_.name), ticker))
+                .toArray(Predicate[]::new));
 
         SetJoin<Post, Tag> posts_tags_join_count = rPost_count.join(Post_.tags, JoinType.LEFT);
         Predicate matchTags_count = tags == null ?
-                cBuilder.conjunction()
-                : cBuilder.and(
-                        tags.stream().map(tag -> cBuilder.equal(posts_tags_join_count.get(Tag_.name), tag))
-                              .toArray(Predicate[]::new));
+                cBuilder.conjunction() : cBuilder.and(tags.stream().map(tag -> cBuilder.equal(posts_tags_join_count.get(Tag_.name), tag))
+                .toArray(Predicate[]::new));
 
         Predicate matchProcessedAt_count = cBuilder.greaterThanOrEqualTo(rPost_count.get(Post_.processedAt), processedAt);
 
-
-        Predicate matchAll_count = cBuilder.and(
-                matchMaster_count,
-                matchTickers_count, matchTags_count,
-                matchProcessedAt_count);
-
-
-        Long matchedCount = em.createQuery(
-                cqLong.select(cBuilder.count(rPost_count)).where(matchAll_count).distinct(true)).getSingleResult();
+        Predicate matchAll_count = cBuilder.and(matchMaster_count, matchTickers_count, matchTags_count, matchProcessedAt_count);
+        Long matchedCount = em.createQuery(cqLong.select(cBuilder.count(rPost_count)).where(matchAll_count).distinct(true))
+                .getSingleResult();
 
 
         return new PageImpl(matchedPosts, pageable, matchedCount);

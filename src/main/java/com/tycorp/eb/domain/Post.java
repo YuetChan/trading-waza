@@ -103,16 +103,15 @@ public class Post extends AbstractDomainEntityTemplate {
         setDescription(description);
         setContents(contents);
 
-        setTickers(
-                tickers.stream().map(ticker -> {
-                    ticker.addPost(this);
-                    return ticker;
-                }).collect(Collectors.toSet()));
-        setTags(
-                tags.stream().map(tag -> {
-                    tag.addPost(this);
-                    return tag;
-                }).collect(Collectors.toSet()));
+        setTickers(tickers.stream().map(ticker -> {
+            ticker.addPost(this);
+            return ticker;
+        }).collect(Collectors.toSet()));
+
+        setTags(tags.stream().map(tag -> {
+            tag.addPost(this);
+            return tag;
+        }).collect(Collectors.toSet()));
 
         setUpdatedBy(signedInUserDetail.getUserId());
         setUpdatedAt(Instant.now().toEpochMilli());
