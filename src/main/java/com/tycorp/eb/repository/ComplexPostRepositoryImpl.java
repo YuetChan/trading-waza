@@ -36,7 +36,7 @@ public class ComplexPostRepositoryImpl implements ComplexPostRepository {
                 cBuilder.conjunction() : cBuilder.and(tags.stream().map(tag -> cBuilder.equal(posts_tags_join.get(Tag_.name), tag))
                 .toArray(Predicate[]::new));
 
-        Predicate matchProcessedAt = cBuilder.greaterThanOrEqualTo(rPost.get(Post_.processedAt), processedAt);
+        Predicate matchProcessedAt = cBuilder.equal(rPost.get(Post_.processedAt), processedAt);
         Predicate matchAll = cBuilder.and(matchMaster, matchTickers, matchTags, matchProcessedAt);
 
         List<Post> matchedPosts = em.createQuery(cqPost.select(rPost).where(matchAll).distinct(true))
@@ -62,7 +62,7 @@ public class ComplexPostRepositoryImpl implements ComplexPostRepository {
                 cBuilder.conjunction() : cBuilder.and(tags.stream().map(tag -> cBuilder.equal(posts_tags_join_count.get(Tag_.name), tag))
                 .toArray(Predicate[]::new));
 
-        Predicate matchProcessedAt_count = cBuilder.greaterThanOrEqualTo(rPost_count.get(Post_.processedAt), processedAt);
+        Predicate matchProcessedAt_count = cBuilder.equal(rPost_count.get(Post_.processedAt), processedAt);
 
         Predicate matchAll_count = cBuilder.and(matchMaster_count, matchTickers_count, matchTags_count, matchProcessedAt_count);
         Long matchedCount = em.createQuery(cqLong.select(cBuilder.count(rPost_count)).where(matchAll_count).distinct(true))

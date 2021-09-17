@@ -57,8 +57,7 @@ public class PostCreateEventListener {
                 builder.setOperator(event.getSignedInUserDetail());
                 Post post = builder
                         .setProcessedAt(createDto.getProcessedAt())
-                        .setSlave(slave)
-                        .setUser(user)
+                        .setSlave(slave).setUser(user)
                         .setTitle(createDto.getTitle()).setDescription(createDto.getDescription())
                         .setContents(createDto.getContents())
                         .setTickers(tickers).setTags(tags)

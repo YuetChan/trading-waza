@@ -2,6 +2,7 @@ package com.tycorp.eb.rest;
 
 import com.google.gson.JsonObject;
 
+import com.tycorp.eb.lib.DateTimeHelper;
 import com.tycorp.eb.rest.dto.exposable.PostGetByFilterDto;
 import com.tycorp.eb.rest.dto.non_exposable.PostCreateDto;
 import com.tycorp.eb.rest.event.PostCreateEvent;
@@ -19,6 +20,8 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,7 +48,10 @@ public class PostCrudAPI {
                                                        @RequestParam(required = false, name = "pageNum", defaultValue = "0") int pageNum,
                                                        @RequestParam(required = false, name = "pageSize", defaultValue = "20") int pageSize) {
         Long processedAt = Instant.now().minus(daysAgo, ChronoUnit.DAYS).toEpochMilli();
-        Page<Post> page = postRepo.findByFilter(processedAt, DEFAULT_SUBSCRIPTION_MASTER_ID, tickers, tags,
+        ZonedDateTime processedAtZdt = DateTimeHelper.truncateTime(Instant.ofEpochMilli(processedAt).atZone(ZoneId.of("America/New_York")));
+        Long truncatedProcessedAt = processedAtZdt.toInstant().toEpochMilli();
+
+        Page<Post> page = postRepo.findByFilter(truncatedProcessedAt, DEFAULT_SUBSCRIPTION_MASTER_ID, tickers, tags,
                 PageRequest.of(pageNum, pageSize));
 
         List<PostGetByFilterDto> getDtos = page.getContent().stream().map(post -> PostGetByFilterDtoTransformer.INSTANCE.transform(post))
