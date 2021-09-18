@@ -22,6 +22,7 @@ public class ComplexPostRepositoryImpl implements ComplexPostRepository {
         CriteriaQuery<Post> cqPost = cBuilder.createQuery(Post.class);
         Root<Post> rPost = cqPost.from(Post.class);
 
+
         Join<Post, SubscriptionMaster> post_masters_join = rPost.join(Post_.master, JoinType.LEFT);
         Predicate matchMaster = masterId == null?
                 cBuilder.conjunction() : cBuilder.equal(post_masters_join.get(SubscriptionMaster_.masterId), masterId);
