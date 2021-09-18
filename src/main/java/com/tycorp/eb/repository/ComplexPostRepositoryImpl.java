@@ -39,6 +39,9 @@ public class ComplexPostRepositoryImpl implements ComplexPostRepository {
         Predicate matchProcessedAt = cBuilder.equal(rPost.get(Post_.processedAt), processedAt);
         Predicate matchAll = cBuilder.and(matchMaster, matchTickers, matchTags, matchProcessedAt);
 
+        rPost.fetch(Post_.tags, JoinType.LEFT);
+        rPost.fetch(Post_.tickers, JoinType.LEFT);
+
         List<Post> matchedPosts = em.createQuery(cqPost.select(rPost).where(matchAll).distinct(true))
                 .setFirstResult(pageable.getPageNumber())
                 .setMaxResults(pageable.getPageSize())
