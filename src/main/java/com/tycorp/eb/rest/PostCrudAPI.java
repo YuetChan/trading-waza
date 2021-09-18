@@ -19,6 +19,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -66,7 +67,7 @@ public class PostCrudAPI {
     }
 
     @PostMapping(value = "", produces = "application/json")
-    public ResponseEntity<JsonObject> postCreate(@RequestBody PostCreateDto createDto) {
+    public ResponseEntity<JsonObject> postCreate(@Valid @RequestBody PostCreateDto createDto) {
         String requestUUID = UUIDHelper.generateUUID();
         eventPublisher.publishEvent(
                 PostCreateEvent.getBuilder()
