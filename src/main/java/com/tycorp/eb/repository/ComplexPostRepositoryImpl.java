@@ -22,16 +22,17 @@ public class ComplexPostRepositoryImpl implements ComplexPostRepository {
         CriteriaQuery<Post> cqPost = cBuilder.createQuery(Post.class);
         Root<Post> rPost = cqPost.from(Post.class);
 
+
         Join<Post, SubscriptionMaster> post_masters_join = rPost.join(Post_.master, JoinType.LEFT);
         Predicate matchMaster = masterId == null?
                 cBuilder.conjunction() : cBuilder.equal(post_masters_join.get(SubscriptionMaster_.masterId), masterId);
 
-        SetJoin<Post, Ticker> posts_tickers_join = rPost.join(Post_.tickers, JoinType.LEFT);
+        SetJoin<Post, Ticker> posts_tickers_join = (SetJoin<Post, Ticker>)rPost.fetch(Post_.tickers, JoinType.LEFT);
         Predicate matchTickers = tickers == null ?
                 cBuilder.conjunction() : cBuilder.and(tickers.stream().map(ticker -> cBuilder.equal(posts_tickers_join.get(Ticker_.name), ticker))
                 .toArray(Predicate[]::new));
 
-        SetJoin<Post, Tag> posts_tags_join = rPost.join(Post_.tags, JoinType.LEFT);
+        SetJoin<Post, Tag> posts_tags_join = (SetJoin<Post, Tag>)rPost.fetch(Post_.tags, JoinType.LEFT);
         Predicate matchTags = tags == null ?
                 cBuilder.conjunction() : cBuilder.and(tags.stream().map(tag -> cBuilder.equal(posts_tags_join.get(Tag_.name), tag))
                 .toArray(Predicate[]::new));
@@ -52,12 +53,12 @@ public class ComplexPostRepositoryImpl implements ComplexPostRepository {
         Predicate matchMaster_count = masterId == null ?
                 cBuilder.conjunction() : cBuilder.equal(posts_master_join_count.get(SubscriptionMaster_.masterId), masterId);
 
-        SetJoin<Post, Ticker> posts_tickers_join_count = rPost_count.join(Post_.tickers, JoinType.LEFT);
+        SetJoin<Post, Ticker> posts_tickers_join_count = (SetJoin<Post, Ticker>) rPost_count.fetch(Post_.tickers, JoinType.LEFT);
         Predicate matchTickers_count = tickers == null ?
                 cBuilder.conjunction() : cBuilder.and(tickers.stream().map(ticker -> cBuilder.equal(posts_tickers_join_count.get(Ticker_.name), ticker))
                 .toArray(Predicate[]::new));
 
-        SetJoin<Post, Tag> posts_tags_join_count = rPost_count.join(Post_.tags, JoinType.LEFT);
+        SetJoin<Post, Tag> posts_tags_join_count = (SetJoin<Post, Tag>) rPost_count.fetch(Post_.tags, JoinType.LEFT);
         Predicate matchTags_count = tags == null ?
                 cBuilder.conjunction() : cBuilder.and(tags.stream().map(tag -> cBuilder.equal(posts_tags_join_count.get(Tag_.name), tag))
                 .toArray(Predicate[]::new));
