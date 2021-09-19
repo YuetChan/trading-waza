@@ -62,7 +62,7 @@ public class ComplexTagRepositoryImpl implements  ComplexTagRepository{
 
     @Override
     public Set<Tag> findAllByNamesOrCreate(Set<String> names) {
-        return names.stream().map(name -> tagRepo.save(tagRepo.findByName(name).orElseGet(() -> new Tag(name))))
+        return names.stream().map(name -> tagRepo.findByName(name).orElseGet(() -> tagRepo.save(new Tag(name))))
                 .collect(Collectors.toSet());
     }
 

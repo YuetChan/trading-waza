@@ -19,12 +19,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.tycorp.eb.repository.ComplexSubscriptionMasterRepository.DEFAULT_SUBSCRIPTION_MASTER_ID;
@@ -43,8 +45,8 @@ public class PostCrudAPI {
 
     @GetMapping(value = "", produces = "application/json")
     @ResponseBody
-    public ResponseEntity<JsonObject> postsGetByFilter(@RequestParam(required = false, name = "tickers") List<String> tickers,
-                                                       @RequestParam(required = false, name = "tags") List<String> tags,
+    public ResponseEntity<JsonObject> postsGetByFilter(@RequestParam(required = false, name = "tickers") Set<String> tickers,
+                                                       @RequestParam(required = false, name = "tags") Set<String> tags,
                                                        @RequestParam(required = true, name = "daysAgo") int daysAgo,
                                                        @RequestParam(required = false, name = "pageNum", defaultValue = "0") int pageNum,
                                                        @RequestParam(required = false, name = "pageSize", defaultValue = "20") int pageSize) {

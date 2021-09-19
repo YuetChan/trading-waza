@@ -62,7 +62,7 @@ public class ComplexTickerRepositoryImpl implements  ComplexTickerRepository {
 
     @Override
     public Set<Ticker> findAllByNamesOrCreate(Set<String> names) {
-        return names.stream().map(name -> tickerRepo.save(tickerRepo.findByName(name).orElseGet(() -> new Ticker(name))))
+        return names.stream().map(name -> tickerRepo.findByName(name).orElseGet(() -> tickerRepo.save(new Ticker(name))))
                 .collect(Collectors.toSet());
     }
 

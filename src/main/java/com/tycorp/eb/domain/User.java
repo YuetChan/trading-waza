@@ -59,8 +59,8 @@ public class User extends AbstractDomainEntityTemplate implements UserDetails {
             String username) {
         slaves.forEach(slave -> {
             slave.addOwner(this);
-            slaves.add(slave);
         });
+        setSlaves(slaves);
 
         setUseremail(useremail);
         setPassword(password);

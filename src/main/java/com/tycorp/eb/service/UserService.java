@@ -1,10 +1,8 @@
 package com.tycorp.eb.service;
+import com.tycorp.eb.domain.*;
 import com.tycorp.eb.exception.InvalidCredentialException;
-import com.tycorp.eb.domain.SubscriptionPermitEnum;
-import com.tycorp.eb.domain.SubscriptionSlave;
+import com.tycorp.eb.repository.SubscriptionMasterRepository;
 import com.tycorp.eb.repository.SubscriptionSlaveRepository;
-import com.tycorp.eb.domain.User;
-import com.tycorp.eb.domain.SignedInUser;
 import com.tycorp.eb.repository.UserRepository;
 import com.tycorp.eb.spring_security.jwt_auth.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,14 +10,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserService extends AbstractEntityService {
 
+    @Autowired
+    protected SubscriptionMasterRepository masterRepo;
     @Autowired
     protected SubscriptionSlaveRepository slaveRepo;
     @Autowired
@@ -51,18 +48,10 @@ public class UserService extends AbstractEntityService {
                 throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Registered useremail");
             }
 
-            Set<SubscriptionSlave> defaultSlaves = slaveRepo.getDefaultSubscriptionSlaves();
-            defaultSlaves.forEach(slave -> {
-                slave.setOperator(authFacade.getDefaultAuthenticatedUserDetail());
-                slave.extend(99999);
-                slave.addPermits(
-                        Arrays.asList(
-                                SubscriptionPermitEnum.CREATE_THREAD,
-                                SubscriptionPermitEnum.UPDATE_THREAD));
-            });
+            SubscriptionSlave defaultSlave = slaveRepo.getDefaultSubscriptionSlave(masterRepo.getDefaultSubscriptionMasters());
+            slaveRepo.save(defaultSlave);
 
-            defaultSlaves.forEach(slave -> slaveRepo.save(slave));
-            userRepo.save(new User(defaultSlaves, useremail, password, username));
+            userRepo.save(new User(Collections.singleton(defaultSlave), useremail, password, username));
         }else {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Invalid invite code");
         }

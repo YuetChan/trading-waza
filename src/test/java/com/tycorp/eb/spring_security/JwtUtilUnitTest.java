@@ -12,17 +12,17 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Profile;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@Profile("test")
-@DisplayName("com.tycorp.eb.spring_security.ebJwtUtilTest")
+@ActiveProfiles("test")
+@DisplayName("com.tycorp.eb.spring_security.JwtUtilTest")
 @SpringBootTest
-public class JwtUtilTest {
+public class JwtUtilUnitTest {
 
     @Autowired
     private JwtUtil jwtUtil_ut;
@@ -34,7 +34,7 @@ public class JwtUtilTest {
 
     @BeforeEach
     public void setup() {
-        SubscriptionSlave slave = new SubscriptionSlave(new SubscriptionMaster());
+        SubscriptionSlave slave = new SubscriptionSlave(new SubscriptionMaster("default_master"));
 
         User user = new User(
                 Stream.of(slave).collect(Collectors.toSet()),
@@ -46,7 +46,7 @@ public class JwtUtilTest {
     }
 
     @Test
-    public void verifyThat_JwtUtil_ShouldReturnExpectedSubject_AfterGenerateJwtTokenAndParseJwtToken() {
+    public void verifyThat_parseJwtToken_shouldReturnExpectedSubject_after_generateJwtTokenAnd() {
         String jwtToken = jwtUtil_ut.generateJwtToken(signedInUser);
         Jws<Claims> claims = jwtUtil_ut.parseJwtToken(jwtToken);
 
@@ -54,7 +54,7 @@ public class JwtUtilTest {
     }
 
     @Test
-    public void verifyThat_JwtUtil_ShouldReturnExpectedIssuer_AfterGenerateJwtTokenAndParseJwtToken() {
+    public void verifyThat_parseJwtToken_shouldReturnExpectedIssuer_after_generateJwtTokenAndParseJwtToken() {
         String jwtToken = jwtUtil_ut.generateJwtToken(signedInUser);
         Jws<Claims> claims = jwtUtil_ut.parseJwtToken(jwtToken);
 

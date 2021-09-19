@@ -18,10 +18,10 @@ import java.util.Set;
 @Where(clause = "is_active=1")
 public class Ticker {
 
+    @Expose
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ticker_id")
-    @Expose
     private Long tickerId;
 
     @ManyToMany
@@ -38,8 +38,8 @@ public class Ticker {
             inverseJoinColumns = @JoinColumn(name = "post_id"))
     private Set<Post> posts = new HashSet();
 
-    @Column(name = "name")
     @Expose
+    @Column(name = "name")
     private String name;
 
     @Column(name = "is_active")

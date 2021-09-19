@@ -8,7 +8,9 @@ import org.springframework.data.domain.Pageable;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.*;
+import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Set;
 
 public class ComplexPostRepositoryImpl implements ComplexPostRepository {
 
@@ -16,7 +18,7 @@ public class ComplexPostRepositoryImpl implements ComplexPostRepository {
     protected EntityManager em;
 
     @Override
-    public Page<Post> findByFilter(Long processedAt, Long masterId, List<String> tickers, List<String> tags, Pageable pageable) {
+    public Page<Post> findByFilter(Long processedAt, Long masterId, Set<String> tickers, Set<String> tags, Pageable pageable) {
         CriteriaBuilder cBuilder = em.getCriteriaBuilder();
 
         CriteriaQuery<Post> cqPost = cBuilder.createQuery(Post.class);

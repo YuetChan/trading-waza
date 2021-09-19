@@ -7,6 +7,6 @@ import java.util.Set;
 public interface ComplexSubscriptionMasterRepository {
 
     Long DEFAULT_SUBSCRIPTION_MASTER_ID = 1l;
-    Set<SubscriptionMaster> getDefaultSubscriptionMasters();
+    SubscriptionMaster getDefaultSubscriptionMasters();
 
 }
