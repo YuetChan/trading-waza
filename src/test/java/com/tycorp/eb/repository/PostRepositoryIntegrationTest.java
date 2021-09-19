@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,6 +23,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ActiveProfiles("test")
 @DisplayName("com.tycorp.eb.repository.PostRepositoryIntegrationTest")
 @SpringBootTest
+@AutoConfigureTestDatabase
+@Transactional
 public class PostRepositoryIntegrationTest {
 
     @Autowired
@@ -85,7 +88,6 @@ public class PostRepositoryIntegrationTest {
     }
 
     @Test
-    @Transactional
     public void verifyThat_findPostByFilter_shouldReturnExpectedTotalPages() {
         int expectedTotalPages = 1;
         Page<Post> page = postRepo_ut.findByFilter(processedAt, masterId, tickers, tags,
@@ -95,7 +97,6 @@ public class PostRepositoryIntegrationTest {
     }
 
     @Test
-    @Transactional
     public void verifyThat_findPostByFilter_shouldReturnExpectedTotalElements() {
         int expectedTotalElement = 1;
         Page<Post> page = postRepo_ut.findByFilter(processedAt, masterId, tickers, tags,
