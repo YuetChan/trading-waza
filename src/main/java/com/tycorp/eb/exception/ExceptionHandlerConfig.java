@@ -17,7 +17,7 @@ public class ExceptionHandlerConfig {
 
     @org.springframework.web.bind.annotation.ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<Object> handleResponseStatusException(HttpServletRequest req, Exception e) {
-        e.printStackTrace();
+
         JsonObject resJson = GsonHelper.getJsonObject();
         resJson.addProperty("message", ((ResponseStatusException) e).getReason());
 
