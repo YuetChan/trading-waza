@@ -23,7 +23,7 @@ public class JwtConfig {
             throws KeyStoreException, UnrecoverableKeyException, NoSuchAlgorithmException,
             IOException, CertificateException {
         KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
-        keyStore.load(getClass().getClassLoader().getResourceAsStream("evening-brew.jks"), keystorePwd.toCharArray());
+        keyStore.load(getClass().getClassLoader().getResourceAsStream("trading-board.jks"), keystorePwd.toCharArray());
 
         return keyStore.getKey(keystoreAlias, keystorePwd.toCharArray());
     }
@@ -31,7 +31,7 @@ public class JwtConfig {
     @Bean(name = "loadJwtPublicKey")
     public PublicKey loadJwtPublicKey() throws Exception {
         CertificateFactory cf = CertificateFactory.getInstance("X.509");
-        Certificate cert = cf.generateCertificate(getClass().getClassLoader().getResourceAsStream("evening-brew.cer"));
+        Certificate cert = cf.generateCertificate(getClass().getClassLoader().getResourceAsStream("trading-board.cer"));
 
         return cert.getPublicKey();
     }

@@ -16,5 +16,6 @@ target/
 
 # Custom stuff
 /src/main/resources/application.properties
-/src/main/resources/evening-brew.cer
-/src/main/resources/evening-brew.jks
+/src/main/resources/trading-board.cer
+/src/main/resources/trading-board.jks
+application-test.properties
