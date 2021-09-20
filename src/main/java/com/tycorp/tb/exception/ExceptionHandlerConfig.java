@@ -27,16 +27,16 @@ public class ExceptionHandlerConfig {
     public ResponseEntity<Object> handleArgumentNotValidException(HttpServletRequest req, Exception e){
         e.printStackTrace();
         JsonObject resJson = GsonHelper.getJsonObject();
-        resJson.addProperty("message", ((ResponseStatusException) e).getReason());
+        resJson.addProperty("message", e.getMessage());
 
-        return new ResponseEntity(resJson, ((ResponseStatusException) e).getStatus());
+        return new ResponseEntity(resJson, HttpStatus.BAD_REQUEST);
     }
 
     @org.springframework.web.bind.annotation.ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<Object> handleMissingServletRequestParameterException(HttpServletRequest req, Exception e){
         e.printStackTrace();
         JsonObject resJson = GsonHelper.getJsonObject();
-        resJson.addProperty("message", ((ResponseStatusException) e).getReason());
+        resJson.addProperty("message", e.getMessage());
 
         return new ResponseEntity(resJson, HttpStatus.BAD_REQUEST);
     }
