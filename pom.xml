@@ -4,10 +4,10 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.tycorp</groupId>
-	<artifactId>eb</artifactId>
+	<artifactId>tb</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Evening Brew Portal</name>
-	<description>Evening Brew Portal</description>
+	<name>Trading Board</name>
+	<description>Trading Board</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>

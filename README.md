@@ -1,4 +1,4 @@
-## Evening Brew Portal
+## Trading Board
 Backend application for uploading and querying posts.
 
 ### Requirements
@@ -6,21 +6,21 @@ Backend application for uploading and querying posts.
 ### Build & Run
     docker-compose up
     
-A "ebdbdata" directory would be created in parent directory for storing sql data
+A "tbdbdata" directory would be created in parent directory for storing sql data
 ### Usage
 **Sign up**
 
 First, create an invite code in redis
 
-        docker exec -it eb-redis sh
+        docker exec -it tb-redis sh
         redis-cli
         set useremail:INVITE_CODE <code>
         
 Then, create a deafult master in mariadb
 
-        docker exec -it eb-mariadb sh
+        docker exec -it tb-mariadb sh
         mysql -u <username> -p <password> 
-        use eb
+        use tb
         insert into master(master_id, name, uploaded_at, uploaded_by) values (1, "default_master", -1, -1);    
 
 **Finally, Post /register**
