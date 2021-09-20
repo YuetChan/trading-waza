@@ -18,4 +18,4 @@ target/
 /src/main/resources/application.properties
 /src/main/resources/trading-board.cer
 /src/main/resources/trading-board.jks
-application-test.properties
+/src/test/resources/application-test.properties
