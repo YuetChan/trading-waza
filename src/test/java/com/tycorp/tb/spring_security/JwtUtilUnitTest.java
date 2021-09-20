@@ -30,7 +30,7 @@ public class JwtUtilUnitTest {
     private SignedInUser signedInUser;
 
     private String subject = "cchan@tradingboard.com";
-    private String issuer = "com.tycorp.ab";
+    private String issuer = "com.tycorp.tb";
 
     @BeforeEach
     public void setup() {
