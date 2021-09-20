@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping(value = "/users")
 public class UserSignInAPI {
@@ -20,7 +22,7 @@ public class UserSignInAPI {
     private UserService userSvc;
 
     @PostMapping(value = "/signin", produces = "application/json")
-    public ResponseEntity<JsonObject> userSignIn(@RequestBody UserSignInDto signInDto) {
+    public ResponseEntity<JsonObject> userSignIn(@Valid @RequestBody UserSignInDto signInDto) {
         JsonObject resJson = GsonHelper.getJsonObject();
         resJson.addProperty("jwt", userSvc.signIn(signInDto.getUseremail(), signInDto.getPassword()));
 

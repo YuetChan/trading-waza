@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 
 @RestController
 @RequestMapping(value = "/users")
@@ -18,7 +20,7 @@ public class UserRegisterAPI {
     private UserService userSvc;
 
     @PostMapping(value = "/register", produces = "application/json")
-    public ResponseEntity<JsonObject> userRegister(@RequestBody UserRegisterDto registerDto) {
+    public ResponseEntity<JsonObject> userRegister(@Valid @RequestBody UserRegisterDto registerDto) {
         userSvc.register(registerDto.getInviteCode(), registerDto.getUseremail(), registerDto.getPassword(), registerDto.getUsername());
 
         JsonObject resJson = GsonHelper.getJsonObject();

@@ -47,7 +47,10 @@ public class WebSecConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
         web.ignoring()
                 .antMatchers(HttpMethod.POST, "/users/signin")
-                .antMatchers(HttpMethod.POST, "/users/register");
+                .antMatchers(HttpMethod.POST, "/users/register")
+                .antMatchers(HttpMethod.GET, "/posts")
+                .antMatchers(HttpMethod.GET, "/tickers")
+                .antMatchers(HttpMethod.GET, "/tags");
     }
 
     @Bean
