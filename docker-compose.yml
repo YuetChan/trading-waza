@@ -22,9 +22,9 @@ services:
     command: redis-server
     networks:
       - tb-net
-  tb-portal:
-    image: tycorp/tb-portal-spring-app:latest
-    container_name: tb-portal
+  tb-backend:
+    image: tycorp/trading-board-spring-app:latest
+    container_name: tb-backend
     restart: always
     ports:
       - "8080:8080"
