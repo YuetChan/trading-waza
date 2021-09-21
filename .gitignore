@@ -16,6 +16,6 @@ target/
 
 # Custom stuff
 /src/main/resources/application.properties
-/src/main/resources/trading-board.cer
-/src/main/resources/trading-board.jks
+/src/main/resources/trading-waza.cer
+/src/main/resources/trading-waza.jks
 /src/test/resources/application-test.properties

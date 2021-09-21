@@ -1,39 +1,39 @@
 version: "3"
 services:
-  tb-mariadb:
+  tw-mariadb:
     image: mariadb:latest
-    container_name: tb-mariadb
+    container_name: tw-mariadb
     restart: always
     expose:
       - "3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: tb
+      MYSQL_DATABASE: tw
     volumes:
-      - ../tbdbdata:/var/lib/mysql
+      - ../tw-db-data:/var/lib/mysql
     networks:
-      - tb-net 
-  tb-redis:
+      - tw-net 
+  tw-redis:
     image: "redis:alpine"
-    container_name: tb-redis
+    container_name: tw-redis
     restart: always
     expose:
       - "6379"
     command: redis-server
     networks:
-      - tb-net
-  tb-backend:
-    image: tycorp/trading-board-spring-app:latest
-    container_name: tb-backend
+      - tw-net
+  tw-backend:
+    image: tycorp/trading-waza-spring-app:latest
+    container_name: tw-backend
     restart: always
     ports:
       - "8080:8080"
     networks:
-      - tb-net  
+      - tw-net  
     depends_on:
-      - tb-mariadb
-      - tb-redis
+      - tw-mariadb
+      - tw-redis
 networks:
-  tb-net:
-    name: tb-net
+  tw-net:
+    name: tw-net
 
