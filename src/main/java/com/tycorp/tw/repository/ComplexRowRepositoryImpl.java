@@ -1,5 +1,7 @@
 package com.tycorp.tw.repository;
 
+import com.tycorp.tw.domain.SubscriptionMaster_;
+import com.tycorp.tw.domain.Row_;
 import com.tycorp.tw.domain.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
