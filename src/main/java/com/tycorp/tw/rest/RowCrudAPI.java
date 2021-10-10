@@ -44,11 +44,10 @@ public class RowCrudAPI {
 
     @GetMapping(value = "", produces = "application/json")
     @ResponseBody
-    public ResponseEntity<JsonObject> rowsGetByFilter(@RequestParam(required = false, name = "tickers") Set<String> tickers,
-                                                       @RequestParam(required = false, name = "indicators") Set<String> indicators,
-                                                       @RequestParam(required = true, name = "daysAgo") int daysAgo,
-                                                       @RequestParam(required = false, name = "pageNum", defaultValue = "0") int pageNum,
-                                                       @RequestParam(required = false, name = "pageSize", defaultValue = "20") int pageSize) {
+    public ResponseEntity<JsonObject> rowsGetByFilter(@RequestParam(required = false, name = "indicators") Set<String> indicators,
+                                                      @RequestParam(required = true, name = "daysAgo") int daysAgo,
+                                                      @RequestParam(required = false, name = "pageNum", defaultValue = "0") int pageNum,
+                                                      @RequestParam(required = false, name = "pageSize", defaultValue = "20") int pageSize) {
         Long processedAt = Instant.now().minus(daysAgo, ChronoUnit.DAYS).toEpochMilli();
         ZonedDateTime processedAtZdt = DateTimeHelper.truncateTime(Instant.ofEpochMilli(processedAt).atZone(ZoneId.of("America/New_York")));
         Long truncatedProcessedAt = processedAtZdt.toInstant().toEpochMilli();

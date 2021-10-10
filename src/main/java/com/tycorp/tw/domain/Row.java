@@ -59,6 +59,15 @@ public class Row extends AbstractDomainEntityTemplate {
     @Column(name = "row_id")
     private Long rowId;
 
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "open", column = @Column(name = "open")),
+            @AttributeOverride(name = "high", column = @Column(name = "high")),
+            @AttributeOverride(name = "close", column = @Column(name = "close")),
+            @AttributeOverride(name = "low", column = @Column(name = "low"))
+    })
+    private PriceDetail priceDetail;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinTable(
             name = "rows_ticker_join",
