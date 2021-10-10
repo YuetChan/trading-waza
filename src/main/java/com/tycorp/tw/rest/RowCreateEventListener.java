@@ -2,11 +2,11 @@ package com.tycorp.tw.rest;
 
 import com.tycorp.tw.exception.DomainEntityNotFoundException;
 import com.tycorp.tw.service.RequestService;
-import com.tycorp.tw.rest.dto.non_exposable.PostCreateDto;
-import com.tycorp.tw.rest.event.PostCreateEvent;
+import com.tycorp.tw.rest.dto.non_exposable.RowCreateDto;
+import com.tycorp.tw.rest.event.RowCreateEvent;
 import com.tycorp.tw.domain.*;
 import com.tycorp.tw.domain.User;
-import com.tycorp.tw.domain.Post;
+import com.tycorp.tw.domain.Row;
 import com.tycorp.tw.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -17,7 +17,7 @@ import javax.transaction.Transactional;
 import java.util.Set;
 
 @Component
-public class PostCreateEventListener {
+public class RowCreateEventListener {
 
     @Autowired
     private SubscriptionMasterRepository masterRepo;
@@ -27,7 +27,7 @@ public class PostCreateEventListener {
     private UserRepository userRepo;
 
     @Autowired
-    private PostRepository postRepo;
+    private RowRepository rowRepo;
 
     @Autowired
     private TickerRepository tickerRepo;
@@ -38,12 +38,12 @@ public class PostCreateEventListener {
     private RequestService requestSvc;
 
     @Async("asyncExecutor")
-    @EventListener({PostCreateEvent.class})
+    @EventListener({RowCreateEvent.class})
     @Transactional
-    public void handleEvent(PostCreateEvent event) {
+    public void handleEvent(RowCreateEvent event) {
         requestSvc.runRequest(event.getUUID(), () -> {
             try {
-                PostCreateDto createDto = event.getCreateDto();
+                RowCreateDto createDto = event.getCreateDto();
 
                 SubscriptionSlave slave = slaveRepo.findById(createDto.getSlaveId()).orElseThrow(
                         () -> new DomainEntityNotFoundException("Subscription not found"));
@@ -53,22 +53,20 @@ public class PostCreateEventListener {
                 Set<Ticker> tickers = tickerRepo.findAllByNamesOrCreate(createDto.getTickers());
                 Set<Tag> tags = tagRepo.findAllByNamesOrCreate(createDto.getTags());
 
-                Post.Builder builder = Post.getBuilder();
+                Row.Builder builder = Row.getBuilder();
                 builder.setOperator(event.getSignedInUserDetail());
-                Post post = builder
+                Row row = builder
                         .setProcessedAt(createDto.getProcessedAt())
                         .setSlave(slave).setUser(user)
-                        .setTitle(createDto.getTitle()).setDescription(createDto.getDescription())
-                        .setContents(createDto.getContents())
                         .setTickers(tickers).setTags(tags)
                         .build();
 
-                postRepo.save(post);
+                rowRepo.save(row);
 
                 SubscriptionMaster master = slave.getMaster();
                 master.addTickers(tickers);
                 master.addTags(tags);
-                master.addPost(post);
+                master.addRow(row);
 
                 masterRepo.save(master);
             }catch (Exception ex) {

@@ -3,14 +3,14 @@ package com.tycorp.tw.rest;
 import com.google.gson.JsonObject;
 
 import com.tycorp.tw.lib.DateTimeHelper;
-import com.tycorp.tw.rest.dto.exposable.PostGetByFilterDto;
-import com.tycorp.tw.rest.dto.non_exposable.PostCreateDto;
-import com.tycorp.tw.rest.event.PostCreateEvent;
-import com.tycorp.tw.rest.dto.transformer.PostGetByFilterDtoTransformer;
-import com.tycorp.tw.domain.Post;
+import com.tycorp.tw.rest.dto.exposable.RowGetByFilterDto;
+import com.tycorp.tw.rest.dto.non_exposable.RowCreateDto;
+import com.tycorp.tw.rest.event.RowCreateEvent;
+import com.tycorp.tw.rest.dto.transformer.RowGetByFilterDtoTransformer;
+import com.tycorp.tw.domain.Row;
 import com.tycorp.tw.lib.GsonHelper;
 import com.tycorp.tw.lib.UUIDHelper;
-import com.tycorp.tw.repository.PostRepository;
+import com.tycorp.tw.repository.RowRepository;
 import com.tycorp.tw.spring_security.AuthenticationFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -31,8 +31,8 @@ import java.util.stream.Collectors;
 import static com.tycorp.tw.repository.ComplexSubscriptionMasterRepository.DEFAULT_SUBSCRIPTION_MASTER_ID;
 
 @RestController
-@RequestMapping(value = "/posts")
-public class PostCrudAPI {
+@RequestMapping(value = "/rows")
+public class RowCrudAPI {
 
     @Autowired
     private AuthenticationFacade authFacade;
@@ -40,11 +40,11 @@ public class PostCrudAPI {
     private ApplicationEventPublisher eventPublisher;
 
     @Autowired
-    private PostRepository postRepo;
+    private RowRepository rowRepo;
 
     @GetMapping(value = "", produces = "application/json")
     @ResponseBody
-    public ResponseEntity<JsonObject> postsGetByFilter(@RequestParam(required = false, name = "tickers") Set<String> tickers,
+    public ResponseEntity<JsonObject> rowsGetByFilter(@RequestParam(required = false, name = "tickers") Set<String> tickers,
                                                        @RequestParam(required = false, name = "tags") Set<String> tags,
                                                        @RequestParam(required = true, name = "daysAgo") int daysAgo,
                                                        @RequestParam(required = false, name = "pageNum", defaultValue = "0") int pageNum,
@@ -53,14 +53,14 @@ public class PostCrudAPI {
         ZonedDateTime processedAtZdt = DateTimeHelper.truncateTime(Instant.ofEpochMilli(processedAt).atZone(ZoneId.of("America/New_York")));
         Long truncatedProcessedAt = processedAtZdt.toInstant().toEpochMilli();
 
-        Page<Post> page = postRepo.findByFilter(truncatedProcessedAt, DEFAULT_SUBSCRIPTION_MASTER_ID, tickers, tags,
+        Page<Row> page = rowRepo.findByFilter(truncatedProcessedAt, DEFAULT_SUBSCRIPTION_MASTER_ID, tickers, tags,
                 PageRequest.of(pageNum, pageSize));
 
-        List<PostGetByFilterDto> getDtos = page.getContent().stream().map(post -> PostGetByFilterDtoTransformer.INSTANCE.transform(post))
+        List<RowGetByFilterDto> getDtos = page.getContent().stream().map(row -> RowGetByFilterDtoTransformer.INSTANCE.transform(row))
                 .collect(Collectors.toList());
 
         JsonObject resJson = GsonHelper.getJsonObject();
-        resJson.add("posts", GsonHelper.createJsonElement(getDtos).getAsJsonArray());
+        resJson.add("rows", GsonHelper.createJsonElement(getDtos).getAsJsonArray());
         resJson.addProperty("totalPages", page.getTotalPages());
         resJson.addProperty("totalElements", page.getTotalElements());
 
@@ -68,10 +68,10 @@ public class PostCrudAPI {
     }
 
     @PostMapping(value = "", produces = "application/json")
-    public ResponseEntity<JsonObject> postCreate(@Valid @RequestBody PostCreateDto createDto) {
+    public ResponseEntity<JsonObject> rowCreate(@Valid @RequestBody RowCreateDto createDto) {
         String requestUUID = UUIDHelper.generateUUID();
         eventPublisher.publishEvent(
-                PostCreateEvent.getBuilder()
+                RowCreateEvent.getBuilder()
                         .setOperator(authFacade.getAuthenticatedUserDetail())
                         .setSource(this).setUUID(requestUUID)
                         .setCreateDto(createDto)

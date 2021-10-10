@@ -33,10 +33,10 @@ public class Tag {
     private Set<SubscriptionMaster> masters = new HashSet();
     @ManyToMany
     @JoinTable(
-            name = "posts_tags_join",
+            name = "rows_tags_join",
             joinColumns = @JoinColumn(name = "tag_id"),
-            inverseJoinColumns = @JoinColumn(name = "post_id"))
-    private Set<Post> posts = new HashSet();
+            inverseJoinColumns = @JoinColumn(name = "row_id"))
+    private Set<Row> rows = new HashSet();
 
     @Expose
     @Column(name = "name")
@@ -53,8 +53,8 @@ public class Tag {
         getMasters().add(master);
     }
 
-    public void addPost(Post post) {
-        getPosts().add(post);
+    public void addRow(Row row) {
+        getRows().add(row);
     }
 
 }

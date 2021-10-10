@@ -1,7 +1,7 @@
 package com.tycorp.tw.domain;
 
 import com.tycorp.tw.exception.DomainInvariantException;
-import com.tycorp.tw.domain.event.PostCreatedEvent;
+import com.tycorp.tw.domain.event.RowCreatedEvent;
 import lombok.*;
 import org.hibernate.annotations.Where;
 
@@ -14,14 +14,14 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Entity
-@Table(name = "post")
+@Table(name = "row")
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
 @Getter(AccessLevel.PUBLIC)
 @Setter(AccessLevel.PRIVATE)
 @Where(clause = "is_active=1")
-public class Post extends AbstractDomainEntityTemplate {
+public class Row extends AbstractDomainEntityTemplate {
 
     @Transient
     private SignedInUserDetail signedInUserDetail;
@@ -35,43 +35,33 @@ public class Post extends AbstractDomainEntityTemplate {
     private Long processedAt;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinTable(
-            name="master_posts_join",
-            joinColumns = @JoinColumn(name="post_id"),
+            name="master_rows_join",
+            joinColumns = @JoinColumn(name="row_id"),
             inverseJoinColumns = @JoinColumn(name="master_id")
     )
     private SubscriptionMaster master;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinTable(
-            name="slave_posts_join",
-            joinColumns = @JoinColumn(name="post_id"),
+            name="slave_rows_join",
+            joinColumns = @JoinColumn(name="row_id"),
             inverseJoinColumns = @JoinColumn(name="slave_id")
     )
     private SubscriptionSlave slave;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "posts_user_join",
-            joinColumns = @JoinColumn(name = "post_id"),
+            name = "rows_user_join",
+            joinColumns = @JoinColumn(name = "row_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private User user;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "post_id")
-    private Long postId;
+    @Column(name = "row_id")
+    private Long rowId;
 
-    @Column(name = "title")
-    private String title;
-    @Column(name = "description")
-    private String description;
-    @OrderColumn
-    @ElementCollection(fetch = FetchType.LAZY)
-    @CollectionTable(name = "post_contents", joinColumns = @JoinColumn(name = "post_id"))
-    @Column(name = "content")
-    private List<String> contents = new ArrayList();
-
-    @ManyToMany(mappedBy = "posts", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "rows", fetch = FetchType.LAZY)
     private Set<Ticker> tickers = new HashSet();
-    @ManyToMany(mappedBy = "posts", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "rows", fetch = FetchType.LAZY)
     private Set<Tag> tags = new HashSet();
 
     @Column(name = "updated_at")
@@ -86,11 +76,10 @@ public class Post extends AbstractDomainEntityTemplate {
     @Column(name = "is_active")
     private Boolean active = true;
 
-    private Post(
+    private Row(
             SignedInUserDetail signedInUserDetail,
             Long processedAt,
             SubscriptionSlave slave, User user,
-            String title, String description, List<String> contents,
             Set<Ticker> tickers, Set<Tag> tags) {
         setSignedInUserDetail(signedInUserDetail);
         setProcessedAt(processedAt);
@@ -99,17 +88,13 @@ public class Post extends AbstractDomainEntityTemplate {
         setSlave(slave);
         setUser(user);
 
-        setTitle(title);
-        setDescription(description);
-        setContents(contents);
-
         setTickers(tickers.stream().map(ticker -> {
-            ticker.addPost(this);
+            ticker.addRow(this);
             return ticker;
         }).collect(Collectors.toSet()));
 
         setTags(tags.stream().map(tag -> {
-            tag.addPost(this);
+            tag.addRow(this);
             return tag;
         }).collect(Collectors.toSet()));
 
@@ -118,13 +103,13 @@ public class Post extends AbstractDomainEntityTemplate {
         setUploadedBy(getUpdatedBy());
         setUploadedAt(getUpdatedAt());
         
-        onPostCreated();
+        onRowCreated();
     }
-    private void onPostCreated() {
-        registerEvent(new PostCreatedEvent(this, this));
+    private void onRowCreated() {
+        registerEvent(new RowCreatedEvent(this, this));
     }
 
-    public Post addMaster(SubscriptionMaster master){
+    public Row addMaster(SubscriptionMaster master){
         setMaster(master);
         return this;
     }
@@ -144,10 +129,6 @@ public class Post extends AbstractDomainEntityTemplate {
         private SubscriptionSlave slave;
         private User user;
 
-        private String title;
-        private String description;
-        private List<String> contents = new ArrayList();
-
         private Set<Ticker> tickers = new HashSet();
         private Set<Tag> tags = new HashSet();
 
@@ -166,21 +147,6 @@ public class Post extends AbstractDomainEntityTemplate {
             return this;
         }
 
-        public Builder setTitle(String title) {
-            this.title = title;
-            return this;
-        }
-
-        public Builder setDescription(String description) {
-            this.description = description;
-            return this;
-        }
-
-        public Builder setContents(List<String> contents) {
-            this.contents = contents;
-            return this;
-        }
-
         public Builder setTickers(Set<Ticker> tickers){
             this.tickers = tickers;
             return this;
@@ -191,7 +157,7 @@ public class Post extends AbstractDomainEntityTemplate {
             return this;
         }
 
-        public Post build() {
+        public Row build() {
             if(!slave.isOwner(user)) {
                 errs.add("Build failed(Not the slave owner)");
             }
@@ -206,11 +172,10 @@ public class Post extends AbstractDomainEntityTemplate {
                 throw new DomainInvariantException(errs.toString());
             }
 
-            return new Post(
+            return new Row(
                     signedInUserDetail,
                     processedAt, 
-                    slave, user, 
-                    title, description, contents,
+                    slave, user,
                     tickers, tags);
         }
 

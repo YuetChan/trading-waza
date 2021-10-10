@@ -11,7 +11,7 @@ import java.util.Set;
 @ToString
 @Getter(AccessLevel.PUBLIC)
 @Setter(AccessLevel.PUBLIC)
-public class PostCreateDto {
+public class RowCreateDto {
 
     @NotNull
     private Long processedAt;
@@ -19,13 +19,6 @@ public class PostCreateDto {
     private Long slaveId;
     @NotNull
     private Long userId;
-
-    @NotNull
-    private String title;
-    @NotNull
-    private String description;
-    @NotNull
-    private List<String> contents;
 
     @NotNull
     private Set<String> tickers;

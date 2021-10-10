@@ -50,7 +50,7 @@ public class SubscriptionSlave extends AbstractDomainEntityTemplate {
     )
     private SubscriptionMaster master;
     @OneToMany(mappedBy = "slave")
-    private Set<Post> posts = new HashSet();
+    private Set<Row> rows = new HashSet();
 
     @ElementCollection
     @CollectionTable(

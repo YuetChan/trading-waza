@@ -12,7 +12,7 @@ import java.util.Set;
 @ToString
 @Getter(AccessLevel.PUBLIC)
 @Setter(AccessLevel.PUBLIC)
-public class PostGetByFilterDto {
+public class RowGetByFilterDto {
 
     @Expose
     private Long processedAt;
@@ -22,12 +22,7 @@ public class PostGetByFilterDto {
     private String useremail;
 
     @Expose
-    private Long postId;
-
-    @Expose
-    private String title;
-    @Expose
-    private String description;
+    private Long rowId;
 
     @Expose
     private Set<Ticker> tickers;

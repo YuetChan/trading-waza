@@ -1,5 +1,5 @@
 ## Trading Waza
-Backend application for uploading and querying posts.
+Backend application for uploading and querying rows.
 
 ### Requirements
 - docker and docker compose installed
@@ -45,13 +45,9 @@ Then, replace Bearer token with returned jwt token
 
 <br/> 
 
-**Upload posts, Post /posts**
+**Upload rows, Post /rows**
 
         {
-            "title": "",
-            "description": "",
-            "contents": [],
-            
             "tickers": ["AAPL", "MSFT"],
             "tags": ["bullish engulfing"],
         
@@ -62,7 +58,7 @@ Then, replace Bearer token with returned jwt token
         
 <br/>
     
-**Query posts, Get /posts**
+**Query rows, Get /rows**
 
     ?daysAgo=1&tags=td_9&pageNum=0&pageSize=10    
 

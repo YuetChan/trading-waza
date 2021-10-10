@@ -34,7 +34,7 @@ public class SubscriptionMaster {
     @OneToMany(mappedBy = "master", fetch = FetchType.LAZY)
     private Set<SubscriptionSlave> slaves = new HashSet();
     @OneToMany(mappedBy = "master", fetch = FetchType.LAZY)
-    private Set<Post> posts = new HashSet();
+    private Set<Row> rows = new HashSet();
 
     @ManyToMany(mappedBy = "masters", fetch = FetchType.LAZY)
     private Set<Ticker> tickers = new HashSet();
@@ -56,8 +56,8 @@ public class SubscriptionMaster {
         getSlaves().add(slave);
     }
 
-    public void addPost(Post post) {
-        getPosts().add(post.addMaster(this));
+    public void addRow(Row row) {
+        getRows().add(row.addMaster(this));
     }
 
     public void addTickers(Set<Ticker> tickers) {

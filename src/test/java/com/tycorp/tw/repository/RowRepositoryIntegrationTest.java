@@ -21,17 +21,17 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ActiveProfiles("test")
-@DisplayName("com.tycorp.tw.repository.PostRepositoryIntegrationTest")
+@DisplayName("com.tycorp.tw.repository.RowRepositoryIntegrationTest")
 @SpringBootTest
 @AutoConfigureTestDatabase
 @Transactional
-public class PostRepositoryIntegrationTest {
+public class RowRepositoryIntegrationTest {
 
     @Autowired
     private AuthenticationFacade authFacade;
 
     @Autowired
-    private PostRepository postRepo_ut;
+    private RowRepository rowRepo_ut;
 
     @Autowired
     private SubscriptionMasterRepository masterRepo;
@@ -73,33 +73,31 @@ public class PostRepositoryIntegrationTest {
         tickers = Stream.of("AAPL").collect(Collectors.toSet());
         tags = Stream.of("golden_cross").collect(Collectors.toSet());
 
-        Post.Builder builder = Post.getBuilder();
+        Row.Builder builder = Row.getBuilder();
         builder.setOperator(authFacade.getDefaultAuthenticatedUserDetail());
-        Post post = builder
+        Row row = builder
                 .setProcessedAt(processedAt)
                 .setSlave(defaultSlave)
                 .setUser(user)
-                .setTitle("").setDescription("")
-                .setContents(new ArrayList())
                 .setTickers(tickerRepo.findAllByNamesOrCreate(tickers)).setTags(tagRepo.findAllByNamesOrCreate(tags))
                 .build();
 
-        postRepo_ut.save(post);
+        rowRepo_ut.save(row);
     }
 
     @Test
-    public void verifyThat_findPostByFilter_shouldReturnExpectedTotalPages() {
+    public void verifyThat_findRowByFilter_shouldReturnExpectedTotalPages() {
         int expectedTotalPages = 1;
-        Page<Post> page = postRepo_ut.findByFilter(processedAt, masterId, tickers, tags,
+        Page<Row> page = rowRepo_ut.findByFilter(processedAt, masterId, tickers, tags,
                 PageRequest.of(0, 20));
 
         assertTrue(page.getTotalPages() == expectedTotalPages);
     }
 
     @Test
-    public void verifyThat_findPostByFilter_shouldReturnExpectedTotalElements() {
+    public void verifyThat_findRowByFilter_shouldReturnExpectedTotalElements() {
         int expectedTotalElement = 1;
-        Page<Post> page = postRepo_ut.findByFilter(processedAt, masterId, tickers, tags,
+        Page<Row> page = rowRepo_ut.findByFilter(processedAt, masterId, tickers, tags,
                 PageRequest.of(0, 20));
 
         assertTrue(page.getTotalElements() == expectedTotalElement);

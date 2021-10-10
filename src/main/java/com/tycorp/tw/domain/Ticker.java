@@ -33,10 +33,10 @@ public class Ticker {
     private Set<SubscriptionMaster> masters = new HashSet();
     @ManyToMany
     @JoinTable(
-            name = "posts_tickers_join",
+            name = "rows_tickers_join",
             joinColumns = @JoinColumn(name = "ticker_id"),
-            inverseJoinColumns = @JoinColumn(name = "post_id"))
-    private Set<Post> posts = new HashSet();
+            inverseJoinColumns = @JoinColumn(name = "row_id"))
+    private Set<Row> rows = new HashSet();
 
     @Expose
     @Column(name = "name")
@@ -53,8 +53,8 @@ public class Ticker {
         getMasters().add(master);
     }
 
-    public void addPost(Post post) {
-        getPosts().add(post);
+    public void addRow(Row row) {
+        getRows().add(row);
     }
 
 }
