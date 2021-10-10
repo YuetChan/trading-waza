@@ -39,7 +39,7 @@ public class SubscriptionMaster {
     @ManyToMany(mappedBy = "masters", fetch = FetchType.LAZY)
     private Set<Ticker> tickers = new HashSet();
     @ManyToMany(mappedBy = "masters", fetch = FetchType.LAZY)
-    private Set<Tag> tags = new HashSet();
+    private Set<Indicator> indicators = new HashSet();
 
     @Column(name = "uploaded_at")
     private Long uploadedAt;
@@ -67,10 +67,10 @@ public class SubscriptionMaster {
         });
     }
 
-    public void addTags(Set<Tag> tags) {
-        tags.forEach(tag -> {
-            tag.addMaster(this);
-            getTags().add(tag);
+    public void addTags(Set<Indicator> indicators) {
+        indicators.forEach(indicator -> {
+            indicator.addMaster(this);
+            getIndicators().add(indicator);
         });
     }
 

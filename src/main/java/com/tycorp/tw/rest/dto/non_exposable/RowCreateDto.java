@@ -21,8 +21,8 @@ public class RowCreateDto {
     private Long userId;
 
     @NotNull
-    private Set<String> tickers;
+    private String ticker;
     @NotNull
-    private Set<String> tags;
+    private Set<String> indicators;
 
 }

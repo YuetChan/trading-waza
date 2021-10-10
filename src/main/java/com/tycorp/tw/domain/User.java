@@ -29,6 +29,9 @@ public class User extends AbstractDomainEntityTemplate implements UserDetails {
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
     private Set<SubscriptionSlave> slaves = new HashSet();
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private Set<Row> rows = new HashSet();
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")

@@ -49,7 +49,7 @@ Then, replace Bearer token with returned jwt token
 
         {
             "tickers": ["AAPL", "MSFT"],
-            "tags": ["bullish engulfing"],
+            "indicators": ["bullish engulfing"],
         
             "processedAt": 1628547559002,
             "slaveId": 1,
@@ -60,7 +60,7 @@ Then, replace Bearer token with returned jwt token
     
 **Query rows, Get /rows**
 
-    ?daysAgo=1&tags=td_9&pageNum=0&pageSize=10    
+    ?daysAgo=1&indicators=td_9&pageNum=0&pageSize=10    
 
 
 Due to the nature of the application, currently portal does not support any delete operations.

@@ -43,14 +43,14 @@ public class RowRepositoryIntegrationTest {
     @Autowired
     private TickerRepository tickerRepo;
     @Autowired
-    private TagRepository tagRepo;
+    private IndicatorRepository indicatorRepo;
 
     private Long processedAt = null;
 
     private Long masterId = null;
 
-    private Set<String> tickers = null;
-    private Set<String> tags = null;
+    private String ticker = null;
+    private Set<String> indicators = null;
 
     @BeforeEach
     public void setup() {
@@ -70,8 +70,8 @@ public class RowRepositoryIntegrationTest {
                 "cchan");
         userRepo.save(user);
 
-        tickers = Stream.of("AAPL").collect(Collectors.toSet());
-        tags = Stream.of("golden_cross").collect(Collectors.toSet());
+        ticker = "AAPL";
+        indicators = Stream.of("golden_cross").collect(Collectors.toSet());
 
         Row.Builder builder = Row.getBuilder();
         builder.setOperator(authFacade.getDefaultAuthenticatedUserDetail());
@@ -79,7 +79,10 @@ public class RowRepositoryIntegrationTest {
                 .setProcessedAt(processedAt)
                 .setSlave(defaultSlave)
                 .setUser(user)
-                .setTickers(tickerRepo.findAllByNamesOrCreate(tickers)).setTags(tagRepo.findAllByNamesOrCreate(tags))
+                .setTicker(tickerRepo.findAllByNamesOrCreate(new HashSet<>(Arrays.asList(ticker)))
+                        .stream().collect(Collectors.toList())
+                        .get(0))
+                .setIndicators(indicatorRepo.findAllByNamesOrCreate(indicators))
                 .build();
 
         rowRepo_ut.save(row);
@@ -88,8 +91,7 @@ public class RowRepositoryIntegrationTest {
     @Test
     public void verifyThat_findRowByFilter_shouldReturnExpectedTotalPages() {
         int expectedTotalPages = 1;
-        Page<Row> page = rowRepo_ut.findByFilter(processedAt, masterId, tickers, tags,
-                PageRequest.of(0, 20));
+        Page<Row> page = rowRepo_ut.findByFilter(processedAt, masterId, indicators, PageRequest.of(0, 20));
 
         assertTrue(page.getTotalPages() == expectedTotalPages);
     }
@@ -97,8 +99,7 @@ public class RowRepositoryIntegrationTest {
     @Test
     public void verifyThat_findRowByFilter_shouldReturnExpectedTotalElements() {
         int expectedTotalElement = 1;
-        Page<Row> page = rowRepo_ut.findByFilter(processedAt, masterId, tickers, tags,
-                PageRequest.of(0, 20));
+        Page<Row> page = rowRepo_ut.findByFilter(processedAt, masterId, indicators, PageRequest.of(0, 20));
 
         assertTrue(page.getTotalElements() == expectedTotalElement);
     }

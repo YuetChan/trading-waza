@@ -2,6 +2,7 @@ package com.tycorp.tw.repository;
 
 import com.tycorp.tw.domain.SubscriptionMaster_;
 import com.tycorp.tw.domain.Row_;
+import com.tycorp.tw.domain.Indicator_;
 import com.tycorp.tw.domain.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -19,7 +20,7 @@ public class ComplexRowRepositoryImpl implements ComplexRowRepository {
     protected EntityManager em;
 
     @Override
-    public Page<Row> findByFilter(Long processedAt, Long masterId, Set<String> tickers, Set<String> tags, Pageable pageable) {
+    public Page<Row> findByFilter(Long processedAt, Long masterId, Set<String> indicators, Pageable pageable) {
         CriteriaBuilder cBuilder = em.getCriteriaBuilder();
 
         CriteriaQuery<Row> cqRow = cBuilder.createQuery(Row.class);
@@ -30,21 +31,16 @@ public class ComplexRowRepositoryImpl implements ComplexRowRepository {
         Predicate matchMaster = masterId == null?
                 cBuilder.conjunction() : cBuilder.equal(row_masters_join.get(SubscriptionMaster_.masterId), masterId);
 
-        SetJoin<Row, Ticker> rows_tickers_join = rRow.join(Row_.tickers, JoinType.LEFT);
-        Predicate matchTickers = tickers == null ?
-                cBuilder.conjunction() : cBuilder.and(tickers.stream().map(ticker -> cBuilder.equal(rows_tickers_join.get(Ticker_.name), ticker))
-                .toArray(Predicate[]::new));
-
-        SetJoin<Row, Tag> rows_tags_join = rRow.join(Row_.tags, JoinType.LEFT);
-        Predicate matchTags = tags == null ?
-                cBuilder.conjunction() : cBuilder.and(tags.stream().map(tag -> cBuilder.equal(rows_tags_join.get(Tag_.name), tag))
+        SetJoin<Row, Indicator> rows_indicators_join = rRow.join(Row_.indicators, JoinType.LEFT);
+        Predicate matchIndicators = indicators == null ?
+                cBuilder.conjunction() : cBuilder.and(indicators.stream().map(indicator -> cBuilder.equal(rows_indicators_join.get(Indicator_.name), indicator))
                 .toArray(Predicate[]::new));
 
         Predicate matchProcessedAt = cBuilder.equal(rRow.get(Row_.processedAt), processedAt);
-        Predicate matchAll = cBuilder.and(matchMaster, matchTickers, matchTags, matchProcessedAt);
+        Predicate matchAll = cBuilder.and(matchMaster, matchIndicators, matchProcessedAt);
 
-        rRow.fetch(Row_.tags, JoinType.LEFT);
-        rRow.fetch(Row_.tickers, JoinType.LEFT);
+        rRow.fetch(Row_.indicators, JoinType.LEFT);
+        rRow.fetch(Row_.ticker, JoinType.LEFT);
 
         List<Row> matchedRows = em.createQuery(cqRow.select(rRow).where(matchAll).distinct(true))
                 .setFirstResult(pageable.getPageNumber())
@@ -59,19 +55,14 @@ public class ComplexRowRepositoryImpl implements ComplexRowRepository {
         Predicate matchMaster_count = masterId == null ?
                 cBuilder.conjunction() : cBuilder.equal(rows_master_join_count.get(SubscriptionMaster_.masterId), masterId);
 
-        SetJoin<Row, Ticker> rows_tickers_join_count = rRow_count.join(Row_.tickers, JoinType.LEFT);
-        Predicate matchTickers_count = tickers == null ?
-                cBuilder.conjunction() : cBuilder.and(tickers.stream().map(ticker -> cBuilder.equal(rows_tickers_join_count.get(Ticker_.name), ticker))
-                .toArray(Predicate[]::new));
-
-        SetJoin<Row, Tag> rows_tags_join_count = rRow_count.join(Row_.tags, JoinType.LEFT);
-        Predicate matchTags_count = tags == null ?
-                cBuilder.conjunction() : cBuilder.and(tags.stream().map(tag -> cBuilder.equal(rows_tags_join_count.get(Tag_.name), tag))
+        SetJoin<Row, Indicator> rows_indicators_join_count = rRow_count.join(Row_.indicators, JoinType.LEFT);
+        Predicate matchTags_count = indicators == null ?
+                cBuilder.conjunction() : cBuilder.and(indicators.stream().map(indicator -> cBuilder.equal(rows_indicators_join_count.get(Indicator_.name), indicator))
                 .toArray(Predicate[]::new));
 
         Predicate matchProcessedAt_count = cBuilder.equal(rRow_count.get(Row_.processedAt), processedAt);
 
-        Predicate matchAll_count = cBuilder.and(matchMaster_count, matchTickers_count, matchTags_count, matchProcessedAt_count);
+        Predicate matchAll_count = cBuilder.and(matchMaster_count, matchTags_count, matchProcessedAt_count);
         Long matchedCount = em.createQuery(cqLong.select(cBuilder.count(rRow_count)).where(matchAll_count).distinct(true))
                 .getSingleResult();
 

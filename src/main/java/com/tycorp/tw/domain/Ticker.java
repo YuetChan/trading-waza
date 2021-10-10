@@ -31,11 +31,7 @@ public class Ticker {
             inverseJoinColumns = @JoinColumn(name = "master_id")
     )
     private Set<SubscriptionMaster> masters = new HashSet();
-    @ManyToMany
-    @JoinTable(
-            name = "rows_tickers_join",
-            joinColumns = @JoinColumn(name = "ticker_id"),
-            inverseJoinColumns = @JoinColumn(name = "row_id"))
+    @OneToMany(mappedBy = "ticker", fetch = FetchType.LAZY)
     private Set<Row> rows = new HashSet();
 
     @Expose

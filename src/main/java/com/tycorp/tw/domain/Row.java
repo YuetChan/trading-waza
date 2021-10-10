@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Entity
-@Table(name = "row")
+@Table(name = "tw_row")
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
@@ -59,10 +59,14 @@ public class Row extends AbstractDomainEntityTemplate {
     @Column(name = "row_id")
     private Long rowId;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "rows_ticker_join",
+            joinColumns = @JoinColumn(name = "row_id"),
+            inverseJoinColumns = @JoinColumn(name = "ticker_id"))
+    private Ticker ticker;
     @ManyToMany(mappedBy = "rows", fetch = FetchType.LAZY)
-    private Set<Ticker> tickers = new HashSet();
-    @ManyToMany(mappedBy = "rows", fetch = FetchType.LAZY)
-    private Set<Tag> tags = new HashSet();
+    private Set<Indicator> indicators = new HashSet();
 
     @Column(name = "updated_at")
     private Long updatedAt;
@@ -80,7 +84,7 @@ public class Row extends AbstractDomainEntityTemplate {
             SignedInUserDetail signedInUserDetail,
             Long processedAt,
             SubscriptionSlave slave, User user,
-            Set<Ticker> tickers, Set<Tag> tags) {
+            Ticker ticker, Set<Indicator> indicators) {
         setSignedInUserDetail(signedInUserDetail);
         setProcessedAt(processedAt);
 
@@ -88,14 +92,10 @@ public class Row extends AbstractDomainEntityTemplate {
         setSlave(slave);
         setUser(user);
 
-        setTickers(tickers.stream().map(ticker -> {
-            ticker.addRow(this);
-            return ticker;
-        }).collect(Collectors.toSet()));
-
-        setTags(tags.stream().map(tag -> {
-            tag.addRow(this);
-            return tag;
+        setTicker(ticker);
+        setIndicators(indicators.stream().map(indicator -> {
+            indicator.addRow(this);
+            return indicator;
         }).collect(Collectors.toSet()));
 
         setUpdatedBy(signedInUserDetail.getUserId());
@@ -129,8 +129,8 @@ public class Row extends AbstractDomainEntityTemplate {
         private SubscriptionSlave slave;
         private User user;
 
-        private Set<Ticker> tickers = new HashSet();
-        private Set<Tag> tags = new HashSet();
+        private Ticker ticker;
+        private Set<Indicator> indicators = new HashSet();
 
         public Builder setProcessedAt(Long processedAt) {
             this.processedAt = processedAt;
@@ -147,13 +147,13 @@ public class Row extends AbstractDomainEntityTemplate {
             return this;
         }
 
-        public Builder setTickers(Set<Ticker> tickers){
-            this.tickers = tickers;
+        public Builder setTicker(Ticker ticker){
+            this.ticker = ticker;
             return this;
         }
 
-        public Builder setTags(Set<Tag> tags) {
-            this.tags = tags;
+        public Builder setIndicators(Set<Indicator> indicators) {
+            this.indicators = indicators;
             return this;
         }
 
@@ -172,11 +172,7 @@ public class Row extends AbstractDomainEntityTemplate {
                 throw new DomainInvariantException(errs.toString());
             }
 
-            return new Row(
-                    signedInUserDetail,
-                    processedAt, 
-                    slave, user,
-                    tickers, tags);
+            return new Row(signedInUserDetail, processedAt, slave, user, ticker, indicators);
         }
 
     }

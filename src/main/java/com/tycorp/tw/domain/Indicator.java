@@ -9,32 +9,32 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "tag")
+@Table(name = "indicator")
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
 @Getter(AccessLevel.PUBLIC)
 @Setter(AccessLevel.PUBLIC)
 @Where(clause = "is_active=1")
-public class Tag {
+public class Indicator {
 
     @Expose
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "tag_id")
-    private Long tagId;
+    @Column(name = "indicator_id")
+    private Long indicatorId;
 
     @ManyToMany
     @JoinTable(
-            name = "masters_tags_join",
-            joinColumns = @JoinColumn(name = "tag_id"),
+            name = "masters_indicators_join",
+            joinColumns = @JoinColumn(name = "indicator_id"),
             inverseJoinColumns = @JoinColumn(name = "master_id")
     )
     private Set<SubscriptionMaster> masters = new HashSet();
     @ManyToMany
     @JoinTable(
-            name = "rows_tags_join",
-            joinColumns = @JoinColumn(name = "tag_id"),
+            name = "rows_indicators_join",
+            joinColumns = @JoinColumn(name = "indicator_id"),
             inverseJoinColumns = @JoinColumn(name = "row_id"))
     private Set<Row> rows = new HashSet();
 
@@ -45,7 +45,7 @@ public class Tag {
     @Column(name = "is_active")
     private Boolean active = true;
 
-    public Tag(String name) {
+    public Indicator(String name) {
         setName(name);
     }
 

@@ -15,8 +15,8 @@ public interface RowGetByFilterDtoTransformer {
     @Mapping(expression="java(row.getUser().getUserId())", target = "userId")
     @Mapping(expression="java(row.getUser().getUseremail())", target = "useremail")
     @Mapping(source = "rowId", target = "rowId")
-    @Mapping(source = "tickers", target = "tickers")
-    @Mapping(source = "tags", target = "tags")
+    @Mapping(source = "ticker", target = "ticker")
+    @Mapping(source = "indicators", target = "indicators")
     @Mapping(source = "updatedAt", target = "updatedAt")
     @Mapping(source = "updatedBy", target = "updatedBy")
     RowGetByFilterDto transform(Row row);

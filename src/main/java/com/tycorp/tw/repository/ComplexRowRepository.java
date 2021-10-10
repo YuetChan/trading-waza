@@ -10,7 +10,6 @@ import java.util.Set;
 @Repository
 public interface ComplexRowRepository {
 
-    Page<Row> findByFilter(Long processedAt, Long masterId, Set<String> tickers, Set<String> tags,
-                           Pageable pageable);
+    Page<Row> findByFilter(Long processedAt, Long masterId, Set<String> indicators, Pageable pageable);
 
 }

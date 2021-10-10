@@ -45,7 +45,7 @@ public class RowCrudAPI {
     @GetMapping(value = "", produces = "application/json")
     @ResponseBody
     public ResponseEntity<JsonObject> rowsGetByFilter(@RequestParam(required = false, name = "tickers") Set<String> tickers,
-                                                       @RequestParam(required = false, name = "tags") Set<String> tags,
+                                                       @RequestParam(required = false, name = "indicators") Set<String> indicators,
                                                        @RequestParam(required = true, name = "daysAgo") int daysAgo,
                                                        @RequestParam(required = false, name = "pageNum", defaultValue = "0") int pageNum,
                                                        @RequestParam(required = false, name = "pageSize", defaultValue = "20") int pageSize) {
@@ -53,14 +53,14 @@ public class RowCrudAPI {
         ZonedDateTime processedAtZdt = DateTimeHelper.truncateTime(Instant.ofEpochMilli(processedAt).atZone(ZoneId.of("America/New_York")));
         Long truncatedProcessedAt = processedAtZdt.toInstant().toEpochMilli();
 
-        Page<Row> page = rowRepo.findByFilter(truncatedProcessedAt, DEFAULT_SUBSCRIPTION_MASTER_ID, tickers, tags,
+        Page<Row> page = rowRepo.findByFilter(truncatedProcessedAt, DEFAULT_SUBSCRIPTION_MASTER_ID, indicators,
                 PageRequest.of(pageNum, pageSize));
 
-        List<RowGetByFilterDto> getDtos = page.getContent().stream().map(row -> RowGetByFilterDtoTransformer.INSTANCE.transform(row))
+        List<RowGetByFilterDto> filterDtos = page.getContent().stream().map(row -> RowGetByFilterDtoTransformer.INSTANCE.transform(row))
                 .collect(Collectors.toList());
 
         JsonObject resJson = GsonHelper.getJsonObject();
-        resJson.add("rows", GsonHelper.createJsonElement(getDtos).getAsJsonArray());
+        resJson.add("rows", GsonHelper.createJsonElement(filterDtos).getAsJsonArray());
         resJson.addProperty("totalPages", page.getTotalPages());
         resJson.addProperty("totalElements", page.getTotalElements());
 

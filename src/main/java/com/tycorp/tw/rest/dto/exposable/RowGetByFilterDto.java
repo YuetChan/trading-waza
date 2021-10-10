@@ -1,7 +1,7 @@
 package com.tycorp.tw.rest.dto.exposable;
 
 import com.google.gson.annotations.Expose;
-import com.tycorp.tw.domain.Tag;
+import com.tycorp.tw.domain.Indicator;
 import com.tycorp.tw.domain.Ticker;
 import lombok.*;
 
@@ -25,9 +25,9 @@ public class RowGetByFilterDto {
     private Long rowId;
 
     @Expose
-    private Set<Ticker> tickers;
+    private Ticker ticker;
     @Expose
-    private Set<Tag> tags;
+    private Set<Indicator> indicators;
 
     @Expose
     private Long updatedAt;

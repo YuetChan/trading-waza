@@ -14,7 +14,10 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class RowCreateEventListener {
@@ -32,7 +35,7 @@ public class RowCreateEventListener {
     @Autowired
     private TickerRepository tickerRepo;
     @Autowired
-    private TagRepository tagRepo;
+    private IndicatorRepository indicatorRepo;
 
     @Autowired
     private RequestService requestSvc;
@@ -50,22 +53,22 @@ public class RowCreateEventListener {
                 User user = userRepo.findById(createDto.getUserId()).orElseThrow(
                         () -> new DomainEntityNotFoundException("User not found"));
 
-                Set<Ticker> tickers = tickerRepo.findAllByNamesOrCreate(createDto.getTickers());
-                Set<Tag> tags = tagRepo.findAllByNamesOrCreate(createDto.getTags());
+                Set<Ticker> tickers = tickerRepo.findAllByNamesOrCreate(new HashSet<>(Arrays.asList(createDto.getTicker())));
+                Set<Indicator> indicators = indicatorRepo.findAllByNamesOrCreate(createDto.getIndicators());
 
                 Row.Builder builder = Row.getBuilder();
                 builder.setOperator(event.getSignedInUserDetail());
                 Row row = builder
                         .setProcessedAt(createDto.getProcessedAt())
                         .setSlave(slave).setUser(user)
-                        .setTickers(tickers).setTags(tags)
+                        .setTicker(tickers.stream().collect(Collectors.toList()).get(0)).setIndicators(indicators)
                         .build();
 
                 rowRepo.save(row);
 
                 SubscriptionMaster master = slave.getMaster();
                 master.addTickers(tickers);
-                master.addTags(tags);
+                master.addTags(indicators);
                 master.addRow(row);
 
                 masterRepo.save(master);
