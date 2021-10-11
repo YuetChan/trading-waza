@@ -48,10 +48,11 @@ public class RowCreateEventListener {
             try {
                 RowCreateDto createDto = event.getCreateDto();
 
-                SubscriptionSlave slave = slaveRepo.findById(createDto.getSlaveId()).orElseThrow(
-                        () -> new DomainEntityNotFoundException("Subscription not found"));
-                User user = userRepo.findById(createDto.getUserId()).orElseThrow(
-                        () -> new DomainEntityNotFoundException("User not found"));
+                SubscriptionSlave slave = slaveRepo.findById(createDto.getSlaveId()).orElseThrow(() ->
+                        new DomainEntityNotFoundException("Subscription not found"));
+
+                User user = userRepo.findById(createDto.getUserId()).orElseThrow(() ->
+                        new DomainEntityNotFoundException("User not found"));
 
                 Set<Ticker> tickers = tickerRepo.findAllByNamesOrCreate(new HashSet<>(Arrays.asList(createDto.getTicker())));
                 Set<Indicator> indicators = indicatorRepo.findAllByNamesOrCreate(createDto.getIndicators());
@@ -61,7 +62,9 @@ public class RowCreateEventListener {
                 Row row = builder
                         .setProcessedAt(createDto.getProcessedAt())
                         .setSlave(slave).setUser(user)
-                        .setTicker(tickers.stream().collect(Collectors.toList()).get(0)).setIndicators(indicators)
+                        .setTicker(tickers.stream().collect(Collectors.toList()).get(0))
+                        .setPriceDetail(createDto.getPriceDetail())
+                        .setIndicators(indicators)
                         .build();
 
                 rowRepo.save(row);

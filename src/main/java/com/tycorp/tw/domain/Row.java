@@ -93,7 +93,7 @@ public class Row extends AbstractDomainEntityTemplate {
             SignedInUserDetail signedInUserDetail,
             Long processedAt,
             SubscriptionSlave slave, User user,
-            Ticker ticker, Set<Indicator> indicators) {
+            Ticker ticker, PriceDetail priceDetail, Set<Indicator> indicators) {
         setSignedInUserDetail(signedInUserDetail);
         setProcessedAt(processedAt);
 
@@ -102,6 +102,7 @@ public class Row extends AbstractDomainEntityTemplate {
         setUser(user);
 
         setTicker(ticker);
+        setPriceDetail(priceDetail);
         setIndicators(indicators.stream().map(indicator -> {
             indicator.addRow(this);
             return indicator;
@@ -139,6 +140,7 @@ public class Row extends AbstractDomainEntityTemplate {
         private User user;
 
         private Ticker ticker;
+        private PriceDetail priceDetail;
         private Set<Indicator> indicators = new HashSet();
 
         public Builder setProcessedAt(Long processedAt) {
@@ -156,8 +158,13 @@ public class Row extends AbstractDomainEntityTemplate {
             return this;
         }
 
-        public Builder setTicker(Ticker ticker){
+        public Builder setTicker(Ticker ticker) {
             this.ticker = ticker;
+            return this;
+        }
+
+        public Builder setPriceDetail(PriceDetail priceDetail) {
+            this.priceDetail = priceDetail;
             return this;
         }
 
@@ -181,7 +188,7 @@ public class Row extends AbstractDomainEntityTemplate {
                 throw new DomainInvariantException(errs.toString());
             }
 
-            return new Row(signedInUserDetail, processedAt, slave, user, ticker, indicators);
+            return new Row(signedInUserDetail, processedAt, slave, user, ticker, priceDetail, indicators);
         }
 
     }
