@@ -11,11 +11,11 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class PriceDetail {
 
-    private Long open;
-    private Long high;
-    private Long close;
-    private Long low;
+    private Double open;
+    private Double high;
+    private Double close;
+    private Double low;
 
-    private Long change;
+    private Double change;
 
 }
