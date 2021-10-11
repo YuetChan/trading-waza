@@ -1,5 +1,6 @@
 package com.tycorp.tw.rest.dto.non_exposable;
 
+import com.tycorp.tw.domain.PriceDetail;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
@@ -22,6 +23,8 @@ public class RowCreateDto {
 
     @NotNull
     private String ticker;
+    @NotNull
+    private PriceDetail priceDetail;
     @NotNull
     private Set<String> indicators;
 

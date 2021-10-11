@@ -26,10 +26,9 @@ public class RowGetByFilterDto {
     private Long rowId;
 
     @Expose
-    private PriceDetail priceDetail;
-
-    @Expose
     private Ticker ticker;
+    @Expose
+    private PriceDetail priceDetail;
     @Expose
     private Set<Indicator> indicators;
 

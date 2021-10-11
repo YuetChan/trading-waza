@@ -58,22 +58,22 @@ public class Row extends AbstractDomainEntityTemplate {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "row_id")
     private Long rowId;
-
-    @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name = "open", column = @Column(name = "open")),
-            @AttributeOverride(name = "high", column = @Column(name = "high")),
-            @AttributeOverride(name = "close", column = @Column(name = "close")),
-            @AttributeOverride(name = "low", column = @Column(name = "low"))
-    })
-    private PriceDetail priceDetail;
-
+    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinTable(
             name = "rows_ticker_join",
             joinColumns = @JoinColumn(name = "row_id"),
             inverseJoinColumns = @JoinColumn(name = "ticker_id"))
     private Ticker ticker;
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "open", column = @Column(name = "tw_open")),
+            @AttributeOverride(name = "high", column = @Column(name = "tw_high")),
+            @AttributeOverride(name = "close", column = @Column(name = "tw_close")),
+            @AttributeOverride(name = "low", column = @Column(name = "tw_low")),
+            @AttributeOverride(name = "change", column = @Column(name = "tw_change"))
+    })
+    private PriceDetail priceDetail;
     @ManyToMany(mappedBy = "rows", fetch = FetchType.LAZY)
     private Set<Indicator> indicators = new HashSet();
 
