@@ -11,6 +11,7 @@ import com.tycorp.tw.domain.Row;
 import com.tycorp.tw.lib.GsonHelper;
 import com.tycorp.tw.lib.UUIDHelper;
 import com.tycorp.tw.repository.RowRepository;
+import com.tycorp.tw.rest.event.RowsBatchCreateEvent;
 import com.tycorp.tw.spring_security.AuthenticationFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -74,6 +75,22 @@ public class RowCrudAPI {
                         .setOperator(authFacade.getAuthenticatedUserDetail())
                         .setSource(this).setUUID(requestUUID)
                         .setCreateDto(createDto)
+                        .build());
+
+        JsonObject resJson = GsonHelper.getJsonObject();
+        resJson.addProperty("requestUUID", requestUUID);
+
+        return new ResponseEntity(resJson, HttpStatus.ACCEPTED);
+    }
+
+    @PostMapping(value = "/batch", produces = "application/json")
+    public ResponseEntity<JsonObject> rowsBatchCreate(@Valid @RequestBody RowCreateDto[] createDtos) {
+        String requestUUID = UUIDHelper.generateUUID();
+        eventPublisher.publishEvent(
+                RowsBatchCreateEvent.getBuilder()
+                        .setOperator(authFacade.getAuthenticatedUserDetail())
+                        .setSource(this).setUUID(requestUUID)
+                        .setCreateDtos(createDtos)
                         .build());
 
         JsonObject resJson = GsonHelper.getJsonObject();

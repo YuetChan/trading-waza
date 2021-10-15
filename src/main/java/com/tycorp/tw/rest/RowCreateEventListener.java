@@ -1,6 +1,7 @@
 package com.tycorp.tw.rest;
 
 import com.tycorp.tw.exception.DomainEntityNotFoundException;
+import com.tycorp.tw.rest.event.RowsBatchCreateEvent;
 import com.tycorp.tw.service.RequestService;
 import com.tycorp.tw.rest.dto.non_exposable.RowCreateDto;
 import com.tycorp.tw.rest.event.RowCreateEvent;
@@ -14,9 +15,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -59,6 +58,7 @@ public class RowCreateEventListener {
 
                 Row.Builder builder = Row.getBuilder();
                 builder.setOperator(event.getSignedInUserDetail());
+
                 Row row = builder
                         .setProcessedAt(createDto.getProcessedAt())
                         .setSlave(slave).setUser(user)
@@ -75,6 +75,52 @@ public class RowCreateEventListener {
                 master.addRow(row);
 
                 masterRepo.save(master);
+            }catch (Exception ex) {
+                throw ex;
+            }
+        });
+    }
+
+    @Async("asyncExecutor")
+    @EventListener({RowsBatchCreateEvent.class})
+    @Transactional
+    public void handleEvent(RowsBatchCreateEvent event) {
+        requestSvc.runRequest(event.getUUID(), () -> {
+            try {
+                RowCreateDto[] createDtos = event.getCreateDtos();
+                List<Row> rowsBatch = new ArrayList();
+
+                for(RowCreateDto dto : createDtos) {
+                    SubscriptionSlave slave = slaveRepo.findById(dto.getSlaveId()).orElseThrow(() ->
+                            new DomainEntityNotFoundException("Subscription not found"));
+
+                    User user = userRepo.findById(dto.getUserId()).orElseThrow(() ->
+                            new DomainEntityNotFoundException("User not found"));
+
+                    Set<Ticker> tickers = tickerRepo.findAllByNamesOrCreate(new HashSet<>(Arrays.asList(dto.getTicker())));
+                    Set<Indicator> indicators = indicatorRepo.findAllByNamesOrCreate(dto.getIndicators());
+
+                    Row.Builder builder = Row.getBuilder();
+                    builder.setOperator(event.getSignedInUserDetail());
+
+                    Row row = builder.setProcessedAt(dto.getProcessedAt())
+                            .setSlave(slave).setUser(user)
+                            .setTicker(tickers.stream().collect(Collectors.toList()).get(0))
+                            .setPriceDetail(dto.getPriceDetail())
+                            .setIndicators(indicators)
+                            .build();
+
+                    rowsBatch.add(row);
+
+                    SubscriptionMaster master = slave.getMaster();
+                    master.addTickers(tickers);
+                    master.addTags(indicators);
+                    master.addRow(row);
+
+                    masterRepo.save(master);
+                }
+
+                rowRepo.saveAll(rowsBatch);
             }catch (Exception ex) {
                 throw ex;
             }
