@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import static com.tycorp.tw.repository.ComplexSubscriptionMasterRepository.DEFAULT_SUBSCRIPTION_MASTER_ID;
 
 @RestController
-@RequestMapping(value = "/metaData")
+@RequestMapping(value = "/meta-data")
 public class MetaDataCrudAPI {
 
     @Autowired

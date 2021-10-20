@@ -49,7 +49,7 @@ public class WebSecConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/users/signin")
                 .antMatchers(HttpMethod.POST, "/users/register")
                 .antMatchers(HttpMethod.GET, "/rows")
-                .antMatchers(HttpMethod.GET, "/indicators");
+                .antMatchers(HttpMethod.GET, "/meta-data/indicators");
     }
 
     @Bean
