@@ -33,11 +33,15 @@ public class WebSecConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .csrf().and().cors().disable()
+                .csrf().disable()
+                .cors().disable()
                 .exceptionHandling()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .authorizeRequests()
+                .antMatchers("/rows/**").permitAll()
                 .and()
                 .addFilterBefore(getTwJwtAuthenticationFilter(), BasicAuthenticationFilter.class);
     }
