@@ -53,6 +53,8 @@ public class RowCrudAPI {
         ZonedDateTime processedAtZdt = DateTimeHelper.truncateTime(Instant.ofEpochMilli(processedAt).atZone(ZoneId.of("America/New_York")));
         Long truncatedProcessedAt = processedAtZdt.toInstant().toEpochMilli();
 
+        System.out.println("---------------------------------------");
+
         Page<Row> page = rowRepo.findByFilter(truncatedProcessedAt, DEFAULT_SUBSCRIPTION_MASTER_ID, indicators,
                 PageRequest.of(pageNum, pageSize));
 
