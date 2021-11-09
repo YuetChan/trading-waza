@@ -60,30 +60,6 @@ public class ComplexRowRepositoryImpl implements ComplexRowRepository {
                 .setMaxResults(8000)
                 .getResultList();
 
-//        CriteriaQuery<Long> cqLong_count = cBuilder.createQuery(Long.class);
-//        Root rRow_count = cqLong_count.from(Row.class);
-//
-//        SetJoin<Row, Indicator> rows_indicators_join_count = rRow_count.join(Row_.indicators, JoinType.LEFT);
-//        Predicate matchIndicators_count = indicators == null ?
-//                cBuilder.conjunction()
-//                : rows_indicators_join_count.get(Indicator_.name).in(indicators);
-//
-//        Join<Row, SubscriptionMaster> row_masters_join_count = rRow_count.join(Row_.master, JoinType.LEFT);
-//        Predicate matchMaster_count = masterId == null ?
-//                cBuilder.conjunction()
-//                : cBuilder.equal(row_masters_join_count.get(SubscriptionMaster_.masterId), masterId);
-//
-//        Predicate matchProcessedAt_count = cBuilder.equal(rRow_count.get(Row_.processedAt), processedAt);
-//        Predicate matchAll_count = cBuilder.and(matchMaster_count, matchIndicators_count, matchProcessedAt_count);
-//
-//        Expression<String> rowId_count = rRow_count.get(Row_.rowId);
-//        cqLong_count.select(cBuilder.count(rRow_count)).where(matchAll_count).groupBy(rowId_count).having(cBuilder.equal(rowCount, indicators.size()));
-//
-//        Long matchedCount = em.createQuery(cqLong_count).getSingleResult();
-
-//        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-//        System.out.println(matchedCount);
-
         return new PageImpl(matchedRows);
     }
 }
