@@ -91,7 +91,7 @@ public class RowRepositoryIntegrationTest {
     @Test
     public void verifyThat_findRowByFilter_shouldReturnExpectedTotalPages() {
         int expectedTotalPages = 1;
-        Page<Row> page = rowRepo_ut.findByFilter(processedAt, masterId, indicators, PageRequest.of(0, 20));
+        Page<Row> page = rowRepo_ut.findByFilter(processedAt, masterId, indicators);
 
         assertTrue(page.getTotalPages() == expectedTotalPages);
     }
@@ -99,7 +99,7 @@ public class RowRepositoryIntegrationTest {
     @Test
     public void verifyThat_findRowByFilter_shouldReturnExpectedTotalElements() {
         int expectedTotalElement = 1;
-        Page<Row> page = rowRepo_ut.findByFilter(processedAt, masterId, indicators, PageRequest.of(0, 20));
+        Page<Row> page = rowRepo_ut.findByFilter(processedAt, masterId, indicators);
 
         assertTrue(page.getTotalElements() == expectedTotalElement);
     }

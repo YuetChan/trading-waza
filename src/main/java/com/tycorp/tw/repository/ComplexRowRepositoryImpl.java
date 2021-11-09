@@ -6,6 +6,7 @@ import com.tycorp.tw.domain.Indicator_;
 import com.tycorp.tw.domain.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import javax.persistence.EntityManager;
@@ -22,8 +23,7 @@ public class ComplexRowRepositoryImpl implements ComplexRowRepository {
     protected EntityManager em;
 
     @Override
-    public Page<Row> findByFilter(Long processedAt, Long masterId, Set<String> indicators,
-                                  Pageable pageable) {
+    public Page<Row> findByFilter(Long processedAt, Long masterId, Set<String> indicators) {
         CriteriaBuilder cBuilder = em.getCriteriaBuilder();
 
         CriteriaQuery<Row> cqRow = cBuilder.createQuery(Row.class);
@@ -55,11 +55,10 @@ public class ComplexRowRepositoryImpl implements ComplexRowRepository {
         rRow.fetch(Row_.indicators, JoinType.LEFT);
         rRow.fetch(Row_.ticker, JoinType.LEFT);
 
-        List<Row> tuples = em.createQuery(cqRow)
-                .setFirstResult(pageable.getPageNumber())
-                .setMaxResults(pageable.getPageSize())
+        List<Row> matchedRows = em.createQuery(cqRow)
+                .setFirstResult(1)
+                .setMaxResults(8000)
                 .getResultList();
-        List<Row> matchedRows = tuples;
 
 //        CriteriaQuery<Long> cqLong_count = cBuilder.createQuery(Long.class);
 //        Root rRow_count = cqLong_count.from(Row.class);
@@ -85,6 +84,6 @@ public class ComplexRowRepositoryImpl implements ComplexRowRepository {
 //        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
 //        System.out.println(matchedCount);
 
-        return new PageImpl(matchedRows, pageable, 1);
+        return new PageImpl(matchedRows, PageRequest.of(1, 8000), 1);
     }
 }
