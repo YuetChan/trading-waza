@@ -33,6 +33,15 @@ services:
     depends_on:
       - tw-mariadb
       - tw-redis
+  tw-backend-smsl-mgm:
+    image: tycorp/trading-waza-smsl-mgm-app:latest
+    container_name: tw-backend-smsl-mgm
+    restart: always
+    ports:
+      - "3029:3029"
+    networks:
+      - tw-net
+      
 networks:
   tw-net:
     name: tw-net
