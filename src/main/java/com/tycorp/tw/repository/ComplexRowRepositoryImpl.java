@@ -48,7 +48,7 @@ public class ComplexRowRepositoryImpl implements ComplexRowRepository {
         Expression<Long> rowCount = cBuilder.count(rSubRow.get(Row_.rowId));
         Expression<String> rowId = rSubRow.get(Row_.rowId);
 
-        cqSubRow.select(rSubRow.get(Row_.rowId)).where(matchAll).groupBy(rowId).having(cBuilder.equal(rowCount, indicators.size()));
+        cqSubRow.select(rSubRow.get(Row_.rowId)).where(matchAll).groupBy(rowId).having(cBuilder.equal(rowCount, indicators == null ? 0 : indicators.size()));
 
         cqRow.select(rRow).where(cBuilder.in(rRow.get(Row_.rowId)).value(cqSubRow));
 
