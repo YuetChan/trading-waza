@@ -37,8 +37,8 @@ services:
     image: tycorp/trading-waza-smsl-mgm-app:latest
     container_name: tw-backend-smsl-mgm
     restart: always
-    ports:
-      - "3029:3029"
+    expose:
+      - "3029"
     networks:
       - tw-net
       
