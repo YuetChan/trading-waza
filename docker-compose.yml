@@ -38,7 +38,7 @@ services:
     container_name: tw-backend-smsl-mgm
     restart: always
     expose:
-      - "3029"
+      - "3000"
     networks:
       - tw-net
       
