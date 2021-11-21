@@ -22,10 +22,6 @@ import java.util.stream.Collectors;
 public class RowCreateEventListener {
 
     @Autowired
-    private SubscriptionMasterRepository masterRepo;
-    @Autowired
-    private SubscriptionSlaveRepository slaveRepo;
-    @Autowired
     private UserRepository userRepo;
 
     @Autowired
@@ -47,9 +43,6 @@ public class RowCreateEventListener {
             try {
                 RowCreateDto createDto = event.getCreateDto();
 
-                SubscriptionSlave slave = slaveRepo.findById(createDto.getSlaveId()).orElseThrow(() ->
-                        new DomainEntityNotFoundException("Subscription not found"));
-
                 User user = userRepo.findById(createDto.getUserId()).orElseThrow(() ->
                         new DomainEntityNotFoundException("User not found"));
 
@@ -60,21 +53,13 @@ public class RowCreateEventListener {
                 builder.setOperator(event.getSignedInUserDetail());
 
                 Row row = builder
-                        .setProcessedAt(createDto.getProcessedAt())
-                        .setSlave(slave).setUser(user)
+                        .setProcessedAt(createDto.getProcessedAt()).setUser(user)
                         .setTicker(tickers.stream().collect(Collectors.toList()).get(0))
                         .setPriceDetail(createDto.getPriceDetail())
                         .setIndicators(indicators)
                         .build();
 
                 rowRepo.save(row);
-
-                SubscriptionMaster master = slave.getMaster();
-                master.addTickers(tickers);
-                master.addTags(indicators);
-                master.addRow(row);
-
-                masterRepo.save(master);
             }catch (Exception ex) {
                 throw ex;
             }
@@ -91,9 +76,6 @@ public class RowCreateEventListener {
                 List<Row> rowsBatch = new ArrayList();
 
                 for(RowCreateDto dto : createDtos) {
-                    SubscriptionSlave slave = slaveRepo.findById(dto.getSlaveId()).orElseThrow(() ->
-                            new DomainEntityNotFoundException("Subscription not found"));
-
                     User user = userRepo.findById(dto.getUserId()).orElseThrow(() ->
                             new DomainEntityNotFoundException("User not found"));
 
@@ -103,21 +85,13 @@ public class RowCreateEventListener {
                     Row.Builder builder = Row.getBuilder();
                     builder.setOperator(event.getSignedInUserDetail());
 
-                    Row row = builder.setProcessedAt(dto.getProcessedAt())
-                            .setSlave(slave).setUser(user)
+                    Row row = builder.setProcessedAt(dto.getProcessedAt()).setUser(user)
                             .setTicker(tickers.stream().collect(Collectors.toList()).get(0))
                             .setPriceDetail(dto.getPriceDetail())
                             .setIndicators(indicators)
                             .build();
 
                     rowsBatch.add(row);
-
-                    SubscriptionMaster master = slave.getMaster();
-                    master.addTickers(tickers);
-                    master.addTags(indicators);
-                    master.addRow(row);
-
-                    masterRepo.save(master);
                 }
 
                 rowRepo.saveAll(rowsBatch);

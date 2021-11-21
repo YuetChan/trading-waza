@@ -26,13 +26,6 @@ public class Indicator {
 
     @ManyToMany
     @JoinTable(
-            name = "masters_indicators_join",
-            joinColumns = @JoinColumn(name = "indicator_id"),
-            inverseJoinColumns = @JoinColumn(name = "master_id")
-    )
-    private Set<SubscriptionMaster> masters = new HashSet();
-    @ManyToMany
-    @JoinTable(
             name = "rows_indicators_join",
             joinColumns = @JoinColumn(name = "indicator_id"),
             inverseJoinColumns = @JoinColumn(name = "row_id"))
@@ -48,11 +41,6 @@ public class Indicator {
     public Indicator(String name) {
         setName(name);
     }
-
-    public void addMaster(SubscriptionMaster master) {
-        getMasters().add(master);
-    }
-
     public void addRow(Row row) {
         getRows().add(row);
     }

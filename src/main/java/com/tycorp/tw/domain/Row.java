@@ -33,20 +33,7 @@ public class Row extends AbstractDomainEntityTemplate {
 
     @Column(name = "processed_at")
     private Long processedAt;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinTable(
-            name="master_rows_join",
-            joinColumns = @JoinColumn(name="row_id"),
-            inverseJoinColumns = @JoinColumn(name="master_id")
-    )
-    private SubscriptionMaster master;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinTable(
-            name="slave_rows_join",
-            joinColumns = @JoinColumn(name="row_id"),
-            inverseJoinColumns = @JoinColumn(name="slave_id")
-    )
-    private SubscriptionSlave slave;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinTable(
             name = "rows_user_join",
@@ -92,17 +79,17 @@ public class Row extends AbstractDomainEntityTemplate {
     private Row(
             SignedInUserDetail signedInUserDetail,
             Long processedAt,
-            SubscriptionSlave slave, User user,
-            Ticker ticker, PriceDetail priceDetail, Set<Indicator> indicators) {
+            User user,
+            Ticker ticker, PriceDetail priceDetail,
+            Set<Indicator> indicators) {
         setSignedInUserDetail(signedInUserDetail);
         setProcessedAt(processedAt);
 
-        setMaster(slave.getMaster());
-        setSlave(slave);
         setUser(user);
 
         setTicker(ticker);
         setPriceDetail(priceDetail);
+        
         setIndicators(indicators.stream().map(indicator -> {
             indicator.addRow(this);
             return indicator;
@@ -119,10 +106,6 @@ public class Row extends AbstractDomainEntityTemplate {
         registerEvent(new RowCreatedEvent(this, this));
     }
 
-    public Row addMaster(SubscriptionMaster master){
-        setMaster(master);
-        return this;
-    }
 
     public static Builder getBuilder() { 
         return new Builder(); 
@@ -136,7 +119,6 @@ public class Row extends AbstractDomainEntityTemplate {
         private List<String> errs = new ArrayList();
 
         private Long processedAt;
-        private SubscriptionSlave slave;
         private User user;
 
         private Ticker ticker;
@@ -145,11 +127,6 @@ public class Row extends AbstractDomainEntityTemplate {
 
         public Builder setProcessedAt(Long processedAt) {
             this.processedAt = processedAt;
-            return this;
-        }
-
-        public Builder setSlave(SubscriptionSlave slave) {
-            this.slave = slave;
             return this;
         }
 
@@ -174,21 +151,11 @@ public class Row extends AbstractDomainEntityTemplate {
         }
 
         public Row build() {
-            if(!slave.isOwner(user)) {
-                errs.add("Build failed(Not the slave owner)");
-            }
-            if(slave.isExpired()) {
-                errs.add("Build failed(Subscription expired)");
-            }
-            if(!slave.hasPermit(SubscriptionPermitEnum.CREATE_THREAD)) {
-                errs.add("Build failed(Require permit)");
-            }
-
             if(errs.size() > 0) {
                 throw new DomainInvariantException(errs.toString());
             }
 
-            return new Row(signedInUserDetail, processedAt, slave, user, ticker, priceDetail, indicators);
+            return new Row(signedInUserDetail, processedAt, user, ticker, priceDetail, indicators);
         }
 
     }

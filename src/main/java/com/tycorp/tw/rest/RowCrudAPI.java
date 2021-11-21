@@ -16,7 +16,6 @@ import com.tycorp.tw.spring_security.AuthenticationFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,8 +27,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import static com.tycorp.tw.repository.ComplexSubscriptionMasterRepository.DEFAULT_SUBSCRIPTION_MASTER_ID;
 
 @RestController
 @RequestMapping(value = "/rows")
@@ -51,7 +48,7 @@ public class RowCrudAPI {
         ZonedDateTime processedAtZdt = DateTimeHelper.truncateTime(Instant.ofEpochMilli(processedAt).atZone(ZoneId.of("America/New_York")));
         Long truncatedProcessedAt = processedAtZdt.toInstant().toEpochMilli();
 
-        Page<Row> page = rowRepo.findByFilter(truncatedProcessedAt, DEFAULT_SUBSCRIPTION_MASTER_ID, indicators);
+        Page<Row> page = rowRepo.findByFilter(truncatedProcessedAt, indicators);
 
         List<RowGetByFilterDto> filterDtos = page.getContent().stream().map(row -> RowGetByFilterDtoTransformer.INSTANCE.transform(row))
                 .collect(Collectors.toList());

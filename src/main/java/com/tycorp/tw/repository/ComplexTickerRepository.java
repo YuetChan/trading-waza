@@ -8,7 +8,7 @@ import java.util.Set;
 
 public interface ComplexTickerRepository {
 
-    Page<Ticker> findByMasterIdAndNameLike(Long masterId, String name, Pageable pageable);
+    Page<Ticker> findByNameLike(String name);
     Set<Ticker> findAllByNamesOrCreate(Set<String> names);
 
 }

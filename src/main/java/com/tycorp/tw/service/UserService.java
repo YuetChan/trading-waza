@@ -1,8 +1,6 @@
 package com.tycorp.tw.service;
 import com.tycorp.tw.domain.*;
 import com.tycorp.tw.exception.InvalidCredentialException;
-import com.tycorp.tw.repository.SubscriptionMasterRepository;
-import com.tycorp.tw.repository.SubscriptionSlaveRepository;
 import com.tycorp.tw.repository.UserRepository;
 import com.tycorp.tw.spring_security.jwt_auth.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +13,6 @@ import java.util.*;
 @Service
 public class UserService extends AbstractEntityService {
 
-    @Autowired
-    protected SubscriptionMasterRepository masterRepo;
-    @Autowired
-    protected SubscriptionSlaveRepository slaveRepo;
     @Autowired
     protected UserRepository userRepo;
 
@@ -48,10 +42,7 @@ public class UserService extends AbstractEntityService {
                 throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Registered useremail");
             }
 
-            SubscriptionSlave defaultSlave = slaveRepo.getDefaultSubscriptionSlave(masterRepo.getDefaultSubscriptionMasters());
-            slaveRepo.save(defaultSlave);
-
-            userRepo.save(new User(Collections.singleton(defaultSlave), useremail, password, username));
+            userRepo.save(new User(useremail, password, username));
         }else {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Invalid invite code");
         }

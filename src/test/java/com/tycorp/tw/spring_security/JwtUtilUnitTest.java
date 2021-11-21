@@ -1,7 +1,5 @@
 package com.tycorp.tw.spring_security;
 
-import com.tycorp.tw.domain.SubscriptionMaster;
-import com.tycorp.tw.domain.SubscriptionSlave;
 import com.tycorp.tw.domain.User;
 import com.tycorp.tw.spring_security.jwt_auth.JwtUtil;
 import com.tycorp.tw.domain.SignedInUser;
@@ -34,10 +32,7 @@ public class JwtUtilUnitTest {
 
     @BeforeEach
     public void setup() {
-        SubscriptionSlave slave = new SubscriptionSlave(new SubscriptionMaster("default_master"));
-
         User user = new User(
-                Stream.of(slave).collect(Collectors.toSet()),
                 "cchan@tradingwaza.com", "",
                 "cchan");
         user.setUserId(1l);

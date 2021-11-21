@@ -24,11 +24,6 @@ public class User extends AbstractDomainEntityTemplate implements UserDetails {
     @Transient
     public List<String> errs = new ArrayList();
 
-    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
-    private Set<SubscriptionMaster> masters = new HashSet();
-    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
-    private Set<SubscriptionSlave> slaves = new HashSet();
-
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private Set<Row> rows = new HashSet();
 
@@ -57,14 +52,8 @@ public class User extends AbstractDomainEntityTemplate implements UserDetails {
     private String username;
 
     public User(
-            Set<SubscriptionSlave> slaves,
             String useremail, String password,
             String username) {
-        slaves.forEach(slave -> {
-            slave.addOwner(this);
-        });
-        setSlaves(slaves);
-
         setUseremail(useremail);
         setPassword(password);
         setUserRole(UserRoleEnum.USER);

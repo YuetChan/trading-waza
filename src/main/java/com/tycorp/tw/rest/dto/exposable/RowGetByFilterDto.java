@@ -29,6 +29,7 @@ public class RowGetByFilterDto {
     private Ticker ticker;
     @Expose
     private PriceDetail priceDetail;
+
     @Expose
     private Set<Indicator> indicators;
 

@@ -8,7 +8,7 @@ import java.util.Set;
 
 public interface ComplexIndicatorRepository {
 
-    Page<Indicator> findByMasterIdAndNameLike(Long masterId, String name, Pageable pageable);
+    Page<Indicator> findByNameLike(String name);
     Set<Indicator> findAllByNamesOrCreate(Set<String> names);
 
 }

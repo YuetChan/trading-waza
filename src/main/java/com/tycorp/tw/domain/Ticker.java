@@ -24,13 +24,6 @@ public class Ticker {
     @Column(name = "ticker_id")
     private Long tickerId;
 
-    @ManyToMany
-    @JoinTable(
-            name="masters_tickers_join",
-            joinColumns = @JoinColumn(name = "ticker_id"),
-            inverseJoinColumns = @JoinColumn(name = "master_id")
-    )
-    private Set<SubscriptionMaster> masters = new HashSet();
     @OneToMany(mappedBy = "ticker", fetch = FetchType.LAZY)
     private Set<Row> rows = new HashSet();
 
@@ -44,11 +37,6 @@ public class Ticker {
     public Ticker(String name) {
         setName(name);
     }
-
-    public void addMaster(SubscriptionMaster master) {
-        getMasters().add(master);
-    }
-
     public void addRow(Row row) {
         getRows().add(row);
     }

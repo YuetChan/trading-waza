@@ -34,10 +34,6 @@ public class RowRepositoryIntegrationTest {
     private RowRepository rowRepo_ut;
 
     @Autowired
-    private SubscriptionMasterRepository masterRepo;
-    @Autowired
-    private SubscriptionSlaveRepository slaveRepo;
-    @Autowired
     private UserRepository userRepo;
 
     @Autowired
@@ -56,16 +52,7 @@ public class RowRepositoryIntegrationTest {
     public void setup() {
         processedAt = Instant.now().toEpochMilli();
 
-        SubscriptionMaster master = new SubscriptionMaster("default_master");
-        masterRepo.save(master);
-
-        masterId = master.getMasterId();
-
-        SubscriptionSlave defaultSlave = slaveRepo.getDefaultSubscriptionSlave(master);
-        slaveRepo.save(defaultSlave);
-
         User user = new User(
-                Collections.singleton(defaultSlave),
                 "cchan@tradingwaza.com", "",
                 "cchan");
         userRepo.save(user);
@@ -77,7 +64,6 @@ public class RowRepositoryIntegrationTest {
         builder.setOperator(authFacade.getDefaultAuthenticatedUserDetail());
         Row row = builder
                 .setProcessedAt(processedAt)
-                .setSlave(defaultSlave)
                 .setUser(user)
                 .setTicker(tickerRepo.findAllByNamesOrCreate(new HashSet<>(Arrays.asList(ticker)))
                         .stream().collect(Collectors.toList())
