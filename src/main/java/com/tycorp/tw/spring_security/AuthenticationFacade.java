@@ -20,9 +20,4 @@ public class AuthenticationFacade {
         return new SignedInUser(defaultUser);
     }
 
-    public SignedInUserDetail getDefaultAuthenticatedUserDetail_test() {
-        User defaultUser = new User(0l, "defaultUser@tradingwaza.com", UserRoleEnum.ADMIN);
-        return new SignedInUser(defaultUser);
-    }
-
 }

@@ -53,7 +53,8 @@ public class RowCreateEventListener {
                 builder.setOperator(event.getSignedInUserDetail());
 
                 Row row = builder
-                        .setProcessedAt(createDto.getProcessedAt()).setUser(user)
+                        .setProcessedAt(createDto.getProcessedAt())
+                        .setUser(user)
                         .setTicker(tickers.stream().collect(Collectors.toList()).get(0))
                         .setPriceDetail(createDto.getPriceDetail())
                         .setIndicators(indicators)
@@ -85,7 +86,8 @@ public class RowCreateEventListener {
                     Row.Builder builder = Row.getBuilder();
                     builder.setOperator(event.getSignedInUserDetail());
 
-                    Row row = builder.setProcessedAt(dto.getProcessedAt()).setUser(user)
+                    Row row = builder.setProcessedAt(dto.getProcessedAt())
+                            .setUser(user)
                             .setTicker(tickers.stream().collect(Collectors.toList()).get(0))
                             .setPriceDetail(dto.getPriceDetail())
                             .setIndicators(indicators)
