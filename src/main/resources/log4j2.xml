@@ -5,9 +5,9 @@
         </Console>
     </Appenders>
     <Loggers>
-<!--        <Logger name="org.hibernate.SQL" level="DEBUG">-->
-<!--            <AppenderRef ref="LogToConsole"/>-->
-<!--        </Logger>-->
+        <Logger name="org.hibernate.SQL" level="DEBUG">
+            <AppenderRef ref="LogToConsole"/>
+        </Logger>
 <!--        <Logger name="org.hibernate.type.descriptor.sql" level="TRACE">-->
 <!--            <AppenderRef ref="LogToConsole"/>-->
 <!--        </Logger>-->
