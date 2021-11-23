@@ -32,7 +32,7 @@ public class ComplexIndicatorRepositoryImpl implements ComplexIndicatorRepositor
         Predicate matchAll = cBuilder.and(matchPattern);
 
         List<Indicator> matchedIndicators = em.createQuery(cqIndicator.select(rIndicator).where(matchAll).distinct(true))
-                .setFirstResult(1)
+                .setFirstResult(0)
                 .setMaxResults(8000)
                 .getResultList();
 

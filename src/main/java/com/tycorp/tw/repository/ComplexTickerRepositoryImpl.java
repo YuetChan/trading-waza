@@ -33,7 +33,7 @@ public class ComplexTickerRepositoryImpl implements  ComplexTickerRepository {
         Predicate matchAll = cBuilder.and(matchPattern);
 
         List<Ticker> matchedTickers = em.createQuery(cqTicker.select(rTicker).where(matchAll).distinct(true))
-                .setFirstResult(1)
+                .setFirstResult(0)
                 .setMaxResults(8000)
                 .getResultList();
 
