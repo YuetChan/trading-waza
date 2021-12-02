@@ -2,7 +2,6 @@ package com.tycorp.tw.repository;
 
 import com.tycorp.tw.domain.Ticker;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import java.util.Set;
 

@@ -17,6 +17,9 @@ public class RowCreateDto {
     @NotNull
     private Long processedAt;
     @NotNull
+    private Long endTimeAt;
+
+    @NotNull
     private Long userId;
 
     @NotNull

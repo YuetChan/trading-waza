@@ -41,22 +41,23 @@ public class RowCreateEventListener {
     public void handleEvent(RowCreateEvent event) {
         requestSvc.runRequest(event.getUUID(), () -> {
             try {
-                RowCreateDto createDto = event.getCreateDto();
+                RowCreateDto dto = event.getCreateDto();
 
-                User user = userRepo.findById(createDto.getUserId()).orElseThrow(() ->
+                User user = userRepo.findById(dto.getUserId()).orElseThrow(() ->
                         new DomainEntityNotFoundException("User not found"));
 
-                Set<Ticker> tickers = tickerRepo.findAllByNamesOrCreate(new HashSet<>(Arrays.asList(createDto.getTicker())));
-                Set<Indicator> indicators = indicatorRepo.findAllByNamesOrCreate(createDto.getIndicators());
+                Set<Ticker> tickers = tickerRepo.findAllByNamesOrCreate(new HashSet<>(Arrays.asList(dto.getTicker())));
+                Set<Indicator> indicators = indicatorRepo.findAllByNamesOrCreate(dto.getIndicators());
 
                 Row.Builder builder = Row.getBuilder();
                 builder.setOperator(event.getSignedInUserDetail());
 
                 Row row = builder
-                        .setProcessedAt(createDto.getProcessedAt())
+                        .setProcessedAt(dto.getProcessedAt())
+                        .setEndTimeAt(dto.getEndTimeAt())
                         .setUser(user)
                         .setTicker(tickers.stream().collect(Collectors.toList()).get(0))
-                        .setPriceDetail(createDto.getPriceDetail())
+                        .setPriceDetail(dto.getPriceDetail())
                         .setIndicators(indicators)
                         .build();
 
@@ -86,7 +87,9 @@ public class RowCreateEventListener {
                     Row.Builder builder = Row.getBuilder();
                     builder.setOperator(event.getSignedInUserDetail());
 
-                    Row row = builder.setProcessedAt(dto.getProcessedAt())
+                    Row row = builder
+                            .setProcessedAt(dto.getProcessedAt())
+                            .setEndTimeAt(dto.getEndTimeAt())
                             .setUser(user)
                             .setTicker(tickers.stream().collect(Collectors.toList()).get(0))
                             .setPriceDetail(dto.getPriceDetail())

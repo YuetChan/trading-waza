@@ -31,6 +31,8 @@ public class Row extends AbstractDomainEntityTemplate {
     @Transient
     public List<String> errs = new ArrayList();
 
+    @Column(name = "end_time_at")
+    private Long endTimeAt;
     @Column(name = "processed_at")
     private Long processedAt;
 
@@ -42,9 +44,8 @@ public class Row extends AbstractDomainEntityTemplate {
     private User user;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "row_id")
-    private Long rowId;
+    private String rowId;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinTable(
@@ -78,11 +79,15 @@ public class Row extends AbstractDomainEntityTemplate {
 
     private Row(
             SignedInUserDetail signedInUserDetail,
-            Long processedAt,
+            Long processedAt, Long endTimeAt,
             User user,
             Ticker ticker, PriceDetail priceDetail,
             Set<Indicator> indicators) {
         setSignedInUserDetail(signedInUserDetail);
+
+        setRowId(ticker.getName() + "_" + processedAt.toString());
+
+        setEndTimeAt(endTimeAt);
         setProcessedAt(processedAt);
 
         setUser(user);
@@ -106,7 +111,6 @@ public class Row extends AbstractDomainEntityTemplate {
         registerEvent(new RowCreatedEvent(this, this));
     }
 
-
     public static Builder getBuilder() { 
         return new Builder(); 
     }
@@ -119,6 +123,8 @@ public class Row extends AbstractDomainEntityTemplate {
         private List<String> errs = new ArrayList();
 
         private Long processedAt;
+        private Long endTimeAt;
+
         private User user;
 
         private Ticker ticker;
@@ -127,6 +133,11 @@ public class Row extends AbstractDomainEntityTemplate {
 
         public Builder setProcessedAt(Long processedAt) {
             this.processedAt = processedAt;
+            return this;
+        }
+
+        public Builder setEndTimeAt(Long endTimeAt) {
+            this.endTimeAt = endTimeAt;
             return this;
         }
 
@@ -155,7 +166,7 @@ public class Row extends AbstractDomainEntityTemplate {
                 throw new DomainInvariantException(errs.toString());
             }
 
-            return new Row(signedInUserDetail, processedAt, user, ticker, priceDetail, indicators);
+            return new Row(signedInUserDetail, processedAt, endTimeAt, user, ticker, priceDetail, indicators);
         }
 
     }
